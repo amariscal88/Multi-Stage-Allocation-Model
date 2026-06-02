@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multi-Stage Funnel WFM Suite v1.2 (Live)</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Firebase Compat Libraries -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -167,7 +165,6 @@
 <div class="header-flex">
   <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
     <div style="display: flex; align-items: center;">
-      <img src="image_2d85ca.png" alt="InStride Health" style="height: 28px; margin-right: 14px; border-radius: 4px;">
       <h1 style="font-size: 18px; margin: 0; font-weight: 800; color: #f8fafc; letter-spacing: -0.5px;">
         Multi-Stage Funnel Arbitrage Suite <span style="font-weight:400; color:#64748b; font-size: 14px;">· v1.2</span>
         <span style="font-size:10px; color:#10b981; background:rgba(16,185,129,0.1); padding:3px 6px; border-radius:4px; margin-left:8px; border:1px solid rgba(16,185,129,0.2); font-weight:bold; vertical-align: middle;">🟢 CLOUD SYNC ACTIVE</span>
@@ -180,14 +177,12 @@
     </div>
   </div>
   
-  <!-- Right Side Buttons -->
   <div style="display: flex; gap: 8px; align-items: center;">
       <button class="btn-action" style="background: transparent; color: #94a3b8; border: 1px solid #374151; padding: 8px 12px; font-size: 10px; border-radius: 6px; transition: 0.2s;" onmouseover="this.style.color='#f8fafc'; this.style.borderColor='#64748b';" onmouseout="this.style.color='#94a3b8'; this.style.borderColor='#374151';" onclick="toggleModal('summary-modal')">ℹ️ SUMMARY</button>
       <button class="btn-action" style="background: #1f2937; color: #f8fafc; border: 1px solid #475569; padding: 8px 16px; font-size: 10px; border-radius: 6px;" onclick="toggleModal('settings-modal')">⚙️ GLOBAL VOLUME & PARAMETERS</button>
   </div>
 </div>
 
-<!-- GLOBAL PARAMETER STRIP -->
 <div class="params-strip">
     <div class="param-item"><span class="param-lbl">Vol Bump</span><div class="param-inp-wrap"><input type="number" id="mod-global-bump" onchange="triggerUpdate()"><span>%</span></div></div>
     <div style="width: 1px; height: 20px; background: #374151; margin: 0 4px;"></div>
@@ -202,17 +197,13 @@
     <div class="param-item"><span class="param-lbl">Enrollment</span><div class="param-inp-wrap"><input type="number" id="mod-global-enroll" onchange="triggerUpdate()"><span>%</span></div></div>
 </div>
 
-<!-- 50/50 SPLIT ARCHITECTURE -->
 <div class="top-50-50">
-    <!-- LEFT HALF: Narrative & High-Level Metrics -->
     <div class="top-left">
         <div class="insight-banner" id="executive-insight-banner"></div>
         <div class="stat-grid" id="top-stats-container">
-            <!-- Dynamically populated stat grid goes here -->
-        </div>
+            </div>
     </div>
 
-    <!-- RIGHT HALF: Unified Bottom-Up Funnel -->
     <div class="top-right panel">
         <h2 style="cursor: pointer; margin-bottom: 0;" onclick="toggleFunnelCollapse()">
             <span style="display:flex; align-items:center; gap:6px;">
@@ -240,7 +231,6 @@
 </div>
 
 <div class="dashboard-grid">
-  <!-- FORECAST PROJECTIONS -->
   <div class="panel span-2">
     <h2>Phone Screen (PS) Capacity vs Demand</h2>
     <div class="chart-container"><canvas id="wfmPsChart"></canvas></div>
@@ -250,7 +240,6 @@
     <div class="chart-container"><canvas id="wfmEvChart"></canvas></div>
   </div>
 
-  <!-- DUAL HEATMAP -->
   <div class="panel full-width">
     <h2 id="heat-title">State Cascading Distribution (PS & Evals)</h2>
     <div id="heatmap-summary" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
@@ -274,7 +263,6 @@
     </div>
   </div>
 
-  <!-- STATE ALLOCATION GRID -->
   <div class="panel span-3">
     <h2 id="matrix-title-label">Mid-Funnel CE Licensure Matrix</h2>
     <p style="font-size: 9px; color: #64748b; margin-bottom: 8px;">PFAs do not appear here as they pull from the global stateless pool. Toggling a CE 'ON' allocates their proportional time to that state.</p>
@@ -287,7 +275,6 @@
     </div>
   </div>
 
-  <!-- PROFILE MANAGER -->
   <div class="panel span-1">
     <h2 id="mix-title" style="align-items: center; display: flex;">
       <span>CE Profile Manager</span>
@@ -296,7 +283,6 @@
     <div id="ce-controls" style="max-height: 380px; overflow-y: auto; padding-right: 5px;"></div>
   </div>
 
-  <!-- DYNAMIC ROSTER AND PTO ALLOCATION LEDGER -->
   <div class="panel full-width">
     <h2>Rolling Capacity & Role Ledger</h2>
     <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 12px;">
@@ -325,7 +311,6 @@
   </div>
 </div>
 
-<!-- DASHBOARD SUMMARY MODAL -->
 <div class="modal-overlay" id="summary-modal">
   <div class="modal-content" style="max-width: 650px; overflow-wrap: break-word;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -345,7 +330,6 @@
   </div>
 </div>
 
-<!-- DYNAMIC MONTH MANAGER MODAL -->
 <div class="modal-overlay" id="month-manager-modal">
   <div class="modal-content" style="max-width: 500px;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 10px;">
@@ -367,7 +351,6 @@
   </div>
 </div>
 
-<!-- GLOBAL PARAMS MODAL -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -404,7 +387,6 @@
   </div>
 </div>
 
-<!-- CUSTOM ALERT/CONFIRM DIALOG -->
 <div class="modal-overlay" id="custom-dialog-overlay" style="z-index: 9999;">
   <div class="dialog-box">
     <p id="dialog-message"></p>
@@ -504,8 +486,23 @@ function hydrateDataDefaults() {
         if (!ROSTER[name].profile) ROSTER[name].profile = [];
         if (!ROSTER[name].pto) ROSTER[name].pto = {};
         if (!ROSTER[name].mix) ROSTER[name].mix = {};
-        if (ROSTER[name].qPs === undefined) ROSTER[name].qPs = (ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4);
-        if (ROSTER[name].qEv === undefined) ROSTER[name].qEv = (ROSTER[name].role === 'PFA') ? 0 : 3;
+        
+        let defaultPs = (ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4);
+        let defaultEv = (ROSTER[name].role === 'PFA') ? 0 : 3;
+
+        // Migrating strict single quotas to temporal/monthly objects
+        if (typeof ROSTER[name].qPs !== 'object') {
+            let oldVal = ROSTER[name].qPs !== undefined ? ROSTER[name].qPs : defaultPs;
+            ROSTER[name].qPs = {};
+            ACTIVE_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal);
+            ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal);
+        }
+        if (typeof ROSTER[name].qEv !== 'object') {
+            let oldVal = ROSTER[name].qEv !== undefined ? ROSTER[name].qEv : defaultEv;
+            ROSTER[name].qEv = {};
+            ACTIVE_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal);
+            ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal);
+        }
         
         if (ROSTER[name].order === undefined) ROSTER[name].order = rosterCount;
         rosterCount++;
@@ -513,6 +510,8 @@ function hydrateDataDefaults() {
         ACTIVE_TIMELINE.forEach(m => {
             if (ROSTER[name].pto[m] === undefined) ROSTER[name].pto[m] = 0;
             if (!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [...ROSTER[name].profile];
+            if (ROSTER[name].qPs[m] === undefined) ROSTER[name].qPs[m] = defaultPs;
+            if (ROSTER[name].qEv[m] === undefined) ROSTER[name].qEv[m] = defaultEv;
         });
     });
 }
@@ -598,7 +597,13 @@ function addNewSpecificMonth() {
     let inp = document.getElementById('new-month-input'); let rawVal = inp.value.trim(); if(!rawVal) return;
     let newM = rawVal; if (ACTIVE_TIMELINE.includes(newM) || ARCHIVED_TIMELINE.includes(newM)) newM += `_${Date.now().toString().slice(-4)}`;
     ACTIVE_TIMELINE.push(newM); LEDGER[newM] = { wd: 21, apps: {}, conv: {} }; MASTER_STATES.forEach(s => { LEDGER[newM].apps[s] = 0; LEDGER[newM].conv[s] = 0; });
-    Object.keys(ROSTER).forEach(name => { ROSTER[name].pto[newM] = 0; ROSTER[name].mix[newM] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile||[])]; });
+    let refMonth = ACTIVE_TIMELINE[activeMonthIdx];
+    Object.keys(ROSTER).forEach(name => { 
+        ROSTER[name].pto[newM] = 0; 
+        ROSTER[name].mix[newM] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile||[])]; 
+        ROSTER[name].qPs[newM] = ROSTER[name].qPs[refMonth] !== undefined ? ROSTER[name].qPs[refMonth] : ((ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4));
+        ROSTER[name].qEv[newM] = ROSTER[name].qEv[refMonth] !== undefined ? ROSTER[name].qEv[refMonth] : ((ROSTER[name].role === 'PFA') ? 0 : 3);
+    });
     inp.value = ''; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
 
@@ -607,10 +612,12 @@ function archiveSpecificMonth(m) {
     ACTIVE_TIMELINE = ACTIVE_TIMELINE.filter(x => x !== m); if (!ARCHIVED_TIMELINE.includes(m)) ARCHIVED_TIMELINE.push(m);
     ARCHIVED_LEDGER[m] = JSON.parse(JSON.stringify(LEDGER[m])); 
     Object.keys(ROSTER).forEach(name => {
-        if (!ARCHIVED_ROSTER[name]) ARCHIVED_ROSTER[name] = { pto: {}, mix: {} };
+        if (!ARCHIVED_ROSTER[name]) ARCHIVED_ROSTER[name] = { pto: {}, mix: {}, qPs: {}, qEv: {} };
         if (ROSTER[name].pto) ARCHIVED_ROSTER[name].pto[m] = ROSTER[name].pto[m];
         if (ROSTER[name].mix) ARCHIVED_ROSTER[name].mix[m] = JSON.parse(JSON.stringify(ROSTER[name].mix[m] || []));
-        delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m];
+        if (ROSTER[name].qPs) ARCHIVED_ROSTER[name].qPs[m] = ROSTER[name].qPs[m];
+        if (ROSTER[name].qEv) ARCHIVED_ROSTER[name].qEv[m] = ROSTER[name].qEv[m];
+        delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; delete ROSTER[name].qPs[m]; delete ROSTER[name].qEv[m];
     });
     delete LEDGER[m]; activeMonthIdx = 0; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
@@ -619,8 +626,16 @@ function restoreArchivedMonth(m) {
     ARCHIVED_TIMELINE = ARCHIVED_TIMELINE.filter(x => x !== m); ACTIVE_TIMELINE.push(m); 
     if (ARCHIVED_LEDGER[m]) { LEDGER[m] = JSON.parse(JSON.stringify(ARCHIVED_LEDGER[m])); delete ARCHIVED_LEDGER[m]; } else { LEDGER[m] = { wd: 21, apps: {}, conv: {} }; MASTER_STATES.forEach(s => { LEDGER[m].apps[s] = 0; LEDGER[m].conv[s] = 0; }); }
     Object.keys(ROSTER).forEach(name => {
-        if (ARCHIVED_ROSTER[name] && ARCHIVED_ROSTER[name].pto[m] !== undefined) { ROSTER[name].pto[m] = ARCHIVED_ROSTER[name].pto[m]; ROSTER[name].mix[m] = ARCHIVED_ROSTER[name].mix[m] || [...(ROSTER[name].profile || [])]; delete ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].mix[m]; } 
-        else { ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])]; }
+        if (ARCHIVED_ROSTER[name]) {
+            if (ARCHIVED_ROSTER[name].pto && ARCHIVED_ROSTER[name].pto[m] !== undefined) { ROSTER[name].pto[m] = ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].pto[m]; } else { ROSTER[name].pto[m] = 0; }
+            if (ARCHIVED_ROSTER[name].mix && ARCHIVED_ROSTER[name].mix[m] !== undefined) { ROSTER[name].mix[m] = ARCHIVED_ROSTER[name].mix[m] || [...(ROSTER[name].profile || [])]; delete ARCHIVED_ROSTER[name].mix[m]; } else { ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])]; }
+            if (ARCHIVED_ROSTER[name].qPs && ARCHIVED_ROSTER[name].qPs[m] !== undefined) { ROSTER[name].qPs[m] = ARCHIVED_ROSTER[name].qPs[m]; delete ARCHIVED_ROSTER[name].qPs[m]; } else { ROSTER[name].qPs[m] = (ROSTER[name].role === 'PFA' ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4)); }
+            if (ARCHIVED_ROSTER[name].qEv && ARCHIVED_ROSTER[name].qEv[m] !== undefined) { ROSTER[name].qEv[m] = ARCHIVED_ROSTER[name].qEv[m]; delete ARCHIVED_ROSTER[name].qEv[m]; } else { ROSTER[name].qEv[m] = (ROSTER[name].role === 'PFA' ? 0 : 3); }
+        } else {
+            ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])];
+            ROSTER[name].qPs[m] = (ROSTER[name].role === 'PFA' ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4));
+            ROSTER[name].qEv[m] = (ROSTER[name].role === 'PFA' ? 0 : 3);
+        }
     });
     activeMonthIdx = ACTIVE_TIMELINE.length - 1; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
     if(document.getElementById('settings-modal').style.display === 'flex') populateGlobalModalViews(); 
@@ -629,13 +644,13 @@ function restoreArchivedMonth(m) {
 function deleteSpecificMonth(m) {
     if (ACTIVE_TIMELINE.length <= 1) { promptAlert("System limitation: You must keep at least one active tracking month in the horizon."); return; }
     ACTIVE_TIMELINE = ACTIVE_TIMELINE.filter(x => x !== m); delete LEDGER[m];
-    Object.keys(ROSTER).forEach(name => { if (ROSTER[name]) { delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; } });
+    Object.keys(ROSTER).forEach(name => { if (ROSTER[name]) { delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; if(ROSTER[name].qPs) delete ROSTER[name].qPs[m]; if(ROSTER[name].qEv) delete ROSTER[name].qEv[m]; } });
     activeMonthIdx = 0; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
 
 function deleteArchivedMonth(m) {
     ARCHIVED_TIMELINE = ARCHIVED_TIMELINE.filter(x => x !== m); delete ARCHIVED_LEDGER[m];
-    Object.keys(ARCHIVED_ROSTER).forEach(name => { if(ARCHIVED_ROSTER[name]) { delete ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].mix[m]; } });
+    Object.keys(ARCHIVED_ROSTER).forEach(name => { if(ARCHIVED_ROSTER[name]) { delete ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].mix[m]; if(ARCHIVED_ROSTER[name].qPs) delete ARCHIVED_ROSTER[name].qPs[m]; if(ARCHIVED_ROSTER[name].qEv) delete ARCHIVED_ROSTER[name].qEv[m]; } });
     saveState(); renderMonthManagerUI();
 }
 
@@ -724,7 +739,10 @@ function addNewClinicianToRoster() {
   let dPs = role === 'PFA' ? 10 : (role === 'LEAD' ? 3 : 4); let dEv = role === 'PFA' ? 0 : 3;
   
   let newOrder = Object.keys(ROSTER).length;
-  ROSTER[name] = { role: role, qPs: dPs, qEv: dEv, order: newOrder, profile: (role === 'PFA' ? [] : [...MASTER_STATES]), pto: {}, mix: {} };
+  let qPsObj = {}, qEvObj = {};
+  ACTIVE_TIMELINE.forEach(m => { qPsObj[m] = dPs; qEvObj[m] = dEv; });
+  
+  ROSTER[name] = { role: role, qPs: qPsObj, qEv: qEvObj, order: newOrder, profile: (role === 'PFA' ? [] : [...MASTER_STATES]), pto: {}, mix: {} };
   ACTIVE_TIMELINE.forEach(m => { ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = (role === 'PFA' ? [] : [...MASTER_STATES]); });
   
   document.getElementById('new-clinician-name').value = ''; saveState(); recalculateDashboardMetrics();
@@ -845,8 +863,8 @@ function recalculateDashboardMetrics() {
   Object.keys(ROSTER).forEach(name => {
     let r = ROSTER[name];
     let pto = parseFloat(r.pto[activeMonth]) || 0;
-    let qPs = parseFloat(r.qPs) || 0;
-    let qEv = parseFloat(r.qEv) || 0;
+    let qPs = parseFloat(r.qPs[activeMonth]) || 0;
+    let qEv = parseFloat(r.qEv[activeMonth]) || 0;
     
     let netDays = Math.max(0, wd - pto);
     
@@ -955,10 +973,12 @@ function recalculateDashboardMetrics() {
     .map(name => {
       let r = ROSTER[name]; let pto = parseFloat(r.pto[activeMonth]) || 0;
       let netDays = Math.max(0, wd - pto);
-      let totalH = netDays * ((parseFloat(r.qPs)||0) * PS_HANDLE + (parseFloat(r.qEv)||0) * EV_HANDLE);
+      let qPs = parseFloat(r.qPs[activeMonth]) || 0;
+      let qEv = parseFloat(r.qEv[activeMonth]) || 0;
+      let totalH = netDays * (qPs * PS_HANDLE + qEv * EV_HANDLE);
       let activeSt = r.mix[activeMonth] || []; let loadDenomApps = 0;
       activeSt.forEach(s => { loadDenomApps += (stateMetrics[s] ? stateMetrics[s].apps : 0); });
-      return { name, activeStates: activeSt, denom: loadDenomApps, masterProfile: r.profile, totalHours: totalH, psCapStrict: netDays * (parseFloat(r.qPs)||0), evCapStrict: netDays * (parseFloat(r.qEv)||0) };
+      return { name, activeStates: activeSt, denom: loadDenomApps, masterProfile: r.profile, totalHours: totalH, psCapStrict: netDays * qPs, evCapStrict: netDays * qEv };
     });
 
   ceAllocations.forEach(ce => {
@@ -1097,7 +1117,7 @@ function toggleGroup(cls) { document.querySelectorAll('.'+cls).forEach(el => { e
 
 function renderCollapsibleLedger(activeM, wd) {
   let thead = document.getElementById('pto-ledger-head'); let body = document.getElementById('pto-ledger-body'); let foot = document.getElementById('pto-ledger-foot');
-  let headHtml = `<tr><th rowspan="2" style="position:sticky; left:0; background:#161b22; z-index:2; border-right:1px solid #374151; min-width:160px;">Resource</th><th colspan="2" style="text-align:center; border-right:1px solid #374151;">Quotas</th>`;
+  let headHtml = `<tr><th rowspan="2" style="position:sticky; left:0; background:#161b22; z-index:2; border-right:1px solid #374151; min-width:160px;">Resource</th><th colspan="2" style="text-align:center; border-right:1px solid #374151; color:#a5b4fc;">Quotas (${activeM.split('_')[0]})</th>`;
   ACTIVE_TIMELINE.forEach(m => { headHtml += `<th colspan="2" style="text-align:center; border-left:1px solid #374151;">${m.split('_')[0]}</th>`; });
   headHtml += `</tr><tr><th style="text-align:center;">PS/Day</th><th style="text-align:center; border-right:1px solid #374151;">Ev/Day</th>`;
   ACTIVE_TIMELINE.forEach(() => { headHtml += `<th style="text-align:center; font-size:8px;">PTO</th><th style="text-align:center; font-size:8px; border-right:1px solid #374151;">STRICT CAP</th>`; });
@@ -1113,12 +1133,23 @@ function renderCollapsibleLedger(activeM, wd) {
       
       groups[role].sort((a,b) => (ROSTER[a].order||0) - (ROSTER[b].order||0)).forEach(n => {
           let r = ROSTER[n];
+          let qPsActive = r.qPs[activeM] !== undefined ? r.qPs[activeM] : 0;
+          let qEvActive = r.qEv[activeM] !== undefined ? r.qEv[activeM] : 0;
+          
           let colHtml = ACTIVE_TIMELINE.map(m => {
-              let pto = r.pto[m] || 0; let mwd = LEDGER[m].wd; let capPs = Math.max(0,(mwd-pto)*r.qPs); let capEv = Math.max(0,(mwd-pto)*r.qEv);
+              let pto = r.pto[m] || 0; let mwd = LEDGER[m].wd; 
+              let mQps = r.qPs[m] || 0; let mQev = r.qEv[m] || 0;
+              let capPs = Math.max(0,(mwd-pto)*mQps); let capEv = Math.max(0,(mwd-pto)*mQev);
               let capStr = role === 'PFA' ? `<span style="color:#94a3b8; font-weight:bold;">${Math.round(capPs)} PS</span>` : `<span style="color:#94a3b8; font-weight:bold;">${Math.round(capPs)} PS <span style="color:#475569; font-weight:normal;">/</span> ${Math.round(capEv)} EV</span>`;
               return `<td><input type="number" step="0.5" value="${pto}" class="ledger-input" onchange="ROSTER['${n}'].pto['${m}']=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td><td style="text-align:center; border-right:1px solid #374151; white-space:nowrap;">${capStr}</td>`;
           }).join('');
-          bHtml += `<tr class="grp-${role}" data-ce-row-id="${n}"><td style="position:sticky; left:0; background:#0b0f19; z-index:1; border-right:1px solid #374151; display:flex; justify-content:space-between; align-items:center;"><strong>${n}</strong> <button class="btn-remove" onclick="promptConfirm('Permanently remove ${n}?', () => deprovisionClinician('${n}'))">×</button></td><td style="text-align:center;"><input type="number" value="${r.qPs}" class="ledger-input" style="color:#93c5fd;" onchange="ROSTER['${n}'].qPs=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td><td style="text-align:center; border-right:1px solid #374151;"><input type="number" value="${r.qEv}" class="ledger-input" style="color:#c4b5fd;" ${role==='PFA'?'disabled':''} onchange="ROSTER['${n}'].qEv=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td>${colHtml}</tr>`;
+          
+          bHtml += `<tr class="grp-${role}" data-ce-row-id="${n}">
+            <td style="position:sticky; left:0; background:#0b0f19; z-index:1; border-right:1px solid #374151; display:flex; justify-content:space-between; align-items:center;"><strong>${n}</strong> <button class="btn-remove" onclick="promptConfirm('Permanently remove ${n}?', () => deprovisionClinician('${n}'))">×</button></td>
+            <td style="text-align:center;"><input type="number" value="${qPsActive}" class="ledger-input" style="color:#93c5fd;" onchange="ROSTER['${n}'].qPs['${activeM}']=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td>
+            <td style="text-align:center; border-right:1px solid #374151;"><input type="number" value="${qEvActive}" class="ledger-input" style="color:#c4b5fd;" ${role==='PFA'?'disabled':''} onchange="ROSTER['${n}'].qEv['${activeM}']=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td>
+            ${colHtml}
+          </tr>`;
       });
   });
   body.innerHTML = bHtml;
@@ -1127,7 +1158,9 @@ function renderCollapsibleLedger(activeM, wd) {
   ACTIVE_TIMELINE.forEach(m => {
       ceLeadPto[m] = 0; ceLeadCapPs[m] = 0; ceLeadCapEv[m] = 0; allPto[m] = 0; allCapPs[m] = 0; allCapEv[m] = 0; let mwd = LEDGER[m].wd;
       Object.keys(ROSTER).forEach(n => {
-          let r = ROSTER[n]; let p = parseFloat(r.pto[m]) || 0; let cps = Math.max(0, (mwd - p) * r.qPs); let cev = Math.max(0, (mwd - p) * r.qEv);
+          let r = ROSTER[n]; let p = parseFloat(r.pto[m]) || 0; 
+          let mQps = r.qPs[m] || 0; let mQev = r.qEv[m] || 0;
+          let cps = Math.max(0, (mwd - p) * mQps); let cev = Math.max(0, (mwd - p) * mQev);
           allPto[m] += p; allCapPs[m] += cps; allCapEv[m] += cev;
           if(r.role !== 'PFA') { ceLeadPto[m] += p; ceLeadCapPs[m] += cps; ceLeadCapEv[m] += cev; }
       });
@@ -1156,9 +1189,10 @@ function renderDualCharts() {
       let tSupPS=0, tSupEV=0;
       Object.keys(ROSTER).forEach(n => {
           let r = ROSTER[n]; let p = parseFloat(r.pto[m])||0; let w = Math.max(0, wd-p);
-          tSupPS += (w * (r.qPs || 0)); tSupEV += (w * (r.qEv || 0));
+          let mQps = r.qPs[m] || 0; let mQev = r.qEv[m] || 0;
+          tSupPS += (w * mQps); tSupEV += (w * mQev);
       });
-      psSup.push(Math.round(tSupPS)); evSup.push(Math.round(tSupEV)); // Keeping historical strict lines for charts
+      psSup.push(Math.round(tSupPS)); evSup.push(Math.round(tSupEV));
   });
 
   if(chartPs) chartPs.destroy();
