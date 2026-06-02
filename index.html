@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multi-Stage Funnel WFM Suite v1.2 (Live)</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Firebase Compat Libraries -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -28,7 +26,7 @@
 
   /* 50/50 SPLIT ARCHITECTURE */
   .top-50-50 { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; align-items: stretch; }
-  .top-left, .top-right { flex: 1; min-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+  .top-left, .top-right { flex: 1; min-width: 400px; display: flex; flex-direction: column; gap: 10px; }
 
   /* PARAMETER STRIP */
   .params-strip { display: flex; gap: 8px; flex-wrap: wrap; background: #111827; padding: 10px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 16px; align-items: center; justify-content: center; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -52,28 +50,29 @@
   .row-final td { background: rgba(16,185,129,0.05); border-top: 2px solid #059669; border-bottom: none; font-size: 14px; color: #10b981; }
   .row-final td:first-child { color: #10b981; }
 
-  /* NARRATIVE BANNER & STAT GRID (UPDATED) */
-  .insight-banner { background: #111827; border-left: 4px solid #8b5cf6; padding: 14px; border-radius: 6px; border-top: 1px solid #374151; border-right: 1px solid #374151; border-bottom: 1px solid #374151; margin-bottom: 12px; }
-  .insight-banner h3 { font-size: 11px; text-transform: uppercase; color: #c4b5fd; margin-bottom: 8px; letter-spacing: 0.05em; }
-  .insight-banner p { font-size: 12.5px; line-height: 1.5; color: #e2e8f0; }
+  /* NARRATIVE BANNER & STAT GRID (UPDATED FOR COMPACTNESS) */
+  .insight-banner { background: #111827; border-left: 4px solid #8b5cf6; padding: 10px 14px; border-radius: 6px; border-top: 1px solid #374151; border-right: 1px solid #374151; border-bottom: 1px solid #374151; margin-bottom: 4px; }
+  .insight-banner h3 { font-size: 10.5px; text-transform: uppercase; color: #c4b5fd; margin-bottom: 6px; letter-spacing: 0.05em; }
+  .insight-banner p { font-size: 11.5px; line-height: 1.4; color: #e2e8f0; margin-bottom: 4px; }
+  .insight-banner p:last-child { margin-bottom: 0; }
   .insight-banner strong { color: #fff; font-weight: 700; }
 
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; align-items: stretch; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; align-items: stretch; }
   
-  .stat-card-basic { background: #1f2937; padding: 14px; border-radius: 6px; border: 1px solid #374151; border-left: 4px solid #475569; display: flex; flex-direction: column; justify-content: center; }
+  .stat-card-basic { background: #1f2937; padding: 10px 14px; border-radius: 6px; border: 1px solid #374151; border-left: 4px solid #475569; display: flex; flex-direction: column; justify-content: center; }
   .stat-card-basic.app-theme { border-left-color: #6366f1; }
   .stat-card-basic.pto-theme { border-left-color: #f43f5e; }
-  .stat-label-basic { font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; font-weight: 700; }
-  .stat-val-basic { font-size: 22px; font-weight: 800; color: #f8fafc; }
-  .pto-split { display: flex; justify-content: space-between; font-size: 10px; color: #cbd5e1; margin-top: 6px; border-top: 1px dotted #374151; padding-top: 6px; }
+  .stat-label-basic { font-size: 9px; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; font-weight: 700; }
+  .stat-val-basic { font-size: 18px; font-weight: 800; color: #f8fafc; }
+  .pto-split { display: flex; justify-content: space-between; font-size: 9px; color: #cbd5e1; margin-top: 6px; border-top: 1px dotted #374151; padding-top: 6px; }
 
-  /* DUAL TRACK MODERN CARDS */
-  .stat-card-modern { background: #202434; border-radius: 6px; border: 1px solid #374151; padding: 14px; display: flex; flex-direction: column; justify-content: center; }
-  .util-header { font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 4px; letter-spacing: 0.05em; }
-  .util-pct { font-size: 24px; font-weight: 800; color: #f8fafc; margin-bottom: 12px; }
-  .bar-row { margin-bottom: 8px; }
+  /* DUAL TRACK MODERN CARDS (COMPACT) */
+  .stat-card-modern { background: #202434; border-radius: 6px; border: 1px solid #374151; padding: 10px 14px; display: flex; flex-direction: column; justify-content: center; }
+  .util-header { font-size: 9px; color: #94a3b8; text-transform: uppercase; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 4px; letter-spacing: 0.05em; align-items: center; }
+  .util-pct { font-size: 18px; font-weight: 800; color: #f8fafc; margin-bottom: 8px; }
+  .bar-row { margin-bottom: 6px; }
   .bar-row:last-child { margin-bottom: 0; }
-  .bar-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: #cbd5e1; margin-bottom: 4px; font-weight: 600; }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 9.5px; color: #cbd5e1; margin-bottom: 3px; font-weight: 600; }
   .bar-bg { width: 100%; height: 3px; background: #0f1117; border-radius: 2px; overflow: hidden; position: relative; }
   .bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; position: absolute; top: 0; left: 0; }
   .bar-red { background: #ef4444; }
@@ -177,14 +176,12 @@
     </div>
   </div>
   
-  <!-- Right Side Buttons -->
   <div style="display: flex; gap: 8px; align-items: center;">
       <button class="btn-action" style="background: transparent; color: #94a3b8; border: 1px solid #374151; padding: 8px 12px; font-size: 10px; border-radius: 6px; transition: 0.2s;" onmouseover="this.style.color='#f8fafc'; this.style.borderColor='#64748b';" onmouseout="this.style.color='#94a3b8'; this.style.borderColor='#374151';" onclick="toggleModal('summary-modal')">ℹ️ SUMMARY</button>
       <button class="btn-action" style="background: #1f2937; color: #f8fafc; border: 1px solid #475569; padding: 8px 16px; font-size: 10px; border-radius: 6px;" onclick="toggleModal('settings-modal')">⚙️ GLOBAL VOLUME & PARAMETERS</button>
   </div>
 </div>
 
-<!-- GLOBAL PARAMETER STRIP -->
 <div class="params-strip">
     <div class="param-item"><span class="param-lbl">Vol Bump</span><div class="param-inp-wrap"><input type="number" id="mod-global-bump" onchange="triggerUpdate()"><span>%</span></div></div>
     <div style="width: 1px; height: 20px; background: #374151; margin: 0 4px;"></div>
@@ -199,17 +196,13 @@
     <div class="param-item"><span class="param-lbl">Enrollment</span><div class="param-inp-wrap"><input type="number" id="mod-global-enroll" onchange="triggerUpdate()"><span>%</span></div></div>
 </div>
 
-<!-- 50/50 SPLIT ARCHITECTURE -->
 <div class="top-50-50">
-    <!-- LEFT HALF: Narrative & High-Level Metrics -->
     <div class="top-left">
         <div class="insight-banner" id="executive-insight-banner"></div>
         <div class="stat-grid" id="top-stats-container">
-            <!-- Dynamically populated stat grid goes here -->
-        </div>
+            </div>
     </div>
 
-    <!-- RIGHT HALF: Unified Bottom-Up Funnel -->
     <div class="top-right panel">
         <h2 style="cursor: pointer; margin-bottom: 0;" onclick="toggleFunnelCollapse()">
             <span style="display:flex; align-items:center; gap:6px;">
@@ -237,7 +230,6 @@
 </div>
 
 <div class="dashboard-grid">
-  <!-- FORECAST PROJECTIONS -->
   <div class="panel span-2">
     <h2>Phone Screen (PS) Capacity vs Demand</h2>
     <div class="chart-container"><canvas id="wfmPsChart"></canvas></div>
@@ -247,7 +239,6 @@
     <div class="chart-container"><canvas id="wfmEvChart"></canvas></div>
   </div>
 
-  <!-- DUAL HEATMAP -->
   <div class="panel full-width">
     <h2 id="heat-title">State Cascading Distribution (PS & Evals)</h2>
     <div id="heatmap-summary" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
@@ -271,7 +262,6 @@
     </div>
   </div>
 
-  <!-- STATE ALLOCATION GRID -->
   <div class="panel span-3">
     <h2 id="matrix-title-label">Mid-Funnel CE Licensure Matrix</h2>
     <p style="font-size: 9px; color: #64748b; margin-bottom: 8px;">PFAs do not appear here as they pull from the global stateless pool. Toggling a CE 'ON' allocates their proportional time to that state.</p>
@@ -284,7 +274,6 @@
     </div>
   </div>
 
-  <!-- PROFILE MANAGER -->
   <div class="panel span-1">
     <h2 id="mix-title" style="align-items: center; display: flex;">
       <span>CE Profile Manager</span>
@@ -293,7 +282,6 @@
     <div id="ce-controls" style="max-height: 380px; overflow-y: auto; padding-right: 5px;"></div>
   </div>
 
-  <!-- DYNAMIC ROSTER AND PTO ALLOCATION LEDGER -->
   <div class="panel full-width">
     <h2>Rolling Capacity & Role Ledger</h2>
     <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 12px;">
@@ -322,7 +310,6 @@
   </div>
 </div>
 
-<!-- DASHBOARD SUMMARY MODAL -->
 <div class="modal-overlay" id="summary-modal">
   <div class="modal-content" style="max-width: 650px; overflow-wrap: break-word;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -342,7 +329,6 @@
   </div>
 </div>
 
-<!-- DYNAMIC MONTH MANAGER MODAL -->
 <div class="modal-overlay" id="month-manager-modal">
   <div class="modal-content" style="max-width: 500px;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 10px;">
@@ -364,7 +350,6 @@
   </div>
 </div>
 
-<!-- GLOBAL PARAMS MODAL -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -401,7 +386,6 @@
   </div>
 </div>
 
-<!-- CUSTOM ALERT/CONFIRM DIALOG -->
 <div class="modal-overlay" id="custom-dialog-overlay" style="z-index: 9999;">
   <div class="dialog-box">
     <p id="dialog-message"></p>
@@ -890,6 +874,9 @@ function recalculateDashboardMetrics() {
   // 4. Update the Unified Funnel Model
   let actualTotalPsYield = actualPfaPsYield + Math.min(remainingCePsDemand, ceTotalHours / PS_HANDLE);
   
+  // Calculate True Maximum Capacity bounds
+  let maxSystemPsCapacity = pfaPsCap + ceStrictPsCap; 
+
   let d_base = sysTotalApps;
   let d_bumped = d_base * mult;
   let d_psSched = sysGrossPsDemand;
@@ -899,8 +886,9 @@ function recalculateDashboardMetrics() {
   let d_evComp = d_evSched * (FUNNEL.evCompRate/100);
   let d_enroll = d_evComp * (FUNNEL.enrollRate/100);
 
+  // MAX POTENTIAL COLUMN MATH
   let p_apps = d_bumped; 
-  let p_psSched = actualTotalPsYield; 
+  let p_psSched = maxSystemPsCapacity; // Fixed: Shows theoretical absolute ceiling
   let p_psComp = p_psSched * (FUNNEL.psCompRate/100);
   let p_scrIn = p_psComp * (FUNNEL.screenInRate/100);
   let p_yldEvDem = p_scrIn * (FUNNEL.evSchedRate/100); 
@@ -989,7 +977,9 @@ function recalculateDashboardMetrics() {
     </div>
     
     <div class="stat-card-modern">
-      <div class="util-header"><span>System PS Util <span class="info-icon" title="Percentage of strictly scheduled PS capacity used.">i</span></span></div>
+      <div class="util-header">
+        <span>System PS Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Percentage of strictly scheduled PS capacity used.</span></div></span>
+      </div>
       <div class="util-pct">${Math.round(sysPsUtilPct)}%</div>
       ${renderVisualBar('CEs', remainingCePsDemand, ceStrictPsCap, 'demand')}
       ${renderVisualBar('PFAs', actualPfaPsYield, pfaPsCap, 'demand')}
@@ -1002,7 +992,9 @@ function recalculateDashboardMetrics() {
     </div>
 
     <div class="stat-card-modern">
-      <div class="util-header"><span>CE Eval Util <span class="info-icon" title="Shows impact of Dynamic Time-Flexing vs Rigid Quotas">i</span></span></div>
+      <div class="util-header">
+        <span>CE Eval Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Shows the impact of dynamic time-flexing versus your rigid quotas.</span></div></span>
+      </div>
       <div class="util-pct">${Math.round(fluidEvUtilPct)}%</div>
       ${renderVisualBar('Strict Quota', sysGrossEvDemand, ceStrictEvCap, 'cap')}
       ${renderVisualBar('Fluid Time', sysGrossEvDemand, ceFluidEvCap, 'cap')}
@@ -1021,8 +1013,8 @@ function renderExecutiveBanner(evDem, evSup, finalYield, activeMonth) {
   container.innerHTML = `
     <h3>MONTHLY INSIGHT ANALYSIS: ${activeMonth.split('_')[0].toUpperCase()}</h3>
     <p><strong>Evaluation Bottleneck Status:</strong> The Demand pipeline requests <strong>${fmt(evDem)} Eval slots</strong>. Using dynamically flexed clinical hours, the CE Roster physically provides <strong>${fmt(evSup)} Schedulable Slots</strong> net of PTO.</p>
-    ${evShort > 0 ? `<p style="color:#fca5a5; font-size:11.5px; margin-top:4px;">⚠️ Mid-Funnel Deficit: We are short ${fmt(evShort)} Evaluation slots compared to baseline demand.</p>` : `<p style="color:#86efac; font-size:11.5px; margin-top:4px;">✅ Eval Queue is adequately staffed.</p>`}
-    <p style="margin-top: 8px;"><strong>Actual Enrollment Yield:</strong> Constraining the pipeline by physical PS limits and EV limits, the system projects <strong>${fmt(finalYield)} Actual Enrollments</strong> for this cohort.</p>
+    ${evShort > 0 ? `<p style="color:#fca5a5; margin-top:6px;">⚠️ Mid-Funnel Deficit: We are short ${fmt(evShort)} Evaluation slots compared to baseline demand.</p>` : `<p style="color:#86efac; margin-top:6px;">✅ Eval Queue is adequately staffed.</p>`}
+    <p style="margin-top: 6px;"><strong>Actual Enrollment Yield:</strong> Constraining the pipeline by physical PS limits and EV limits, the system projects <strong>${fmt(finalYield)} Actual Enrollments</strong> for this cohort.</p>
   `;
 }
 
