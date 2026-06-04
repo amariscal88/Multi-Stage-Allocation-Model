@@ -340,10 +340,11 @@
     <div style="color: #cbd5e1; font-size: 13px; line-height: 1.6;">
         <p style="margin-bottom: 14px;"><strong style="color: #93c5fd;">What it does:</strong> End-to-end tactical alignment (Demand Pipeline vs. Maximum Capacity Potential).</p>
         <p style="margin-bottom: 20px;"><strong style="color: #c4b5fd;">Core Focus:</strong> This is the definitive "Command Center" dashboard that highlights exactly where the pipeline will choke on a monthly and weekly basis. It bridges your marketing numbers with your physical roster limitations.</p>
-        <h3 style="color: #f8fafc; font-size: 14px; margin-bottom: 10px; border-bottom: 1px dotted #374151; padding-bottom: 6px;">Key Features</h3>
+        <h3 style="color: #f8fafc; font-size: 14px; margin-bottom: 10px; border-bottom: 1px dotted #374151; padding-bottom: 6px;">Key Features & Logic</h3>
         <ul style="padding-left: 24px; list-style-type: disc;">
             <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">The 50/50 Dual View:</strong> Maps out unconstrained mathematical Demand side-by-side with your roster's true Max Potential Yield at every transition point.</li>
-            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Dynamic Time Flexing:</strong> It converts rigid task quotas into a Fluid Time bank. Every PS routed to a PFA instantly frees up 30 minutes of clinical time that is immediately reinvested into Evaluation capacity.</li>
+            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Dynamic Time Flexing (Fluid Time):</strong> It converts rigid task quotas into a Fluid Time bank. Every PS routed to a PFA instantly frees up 30 minutes of clinical time that is immediately reinvested into Evaluation capacity.</li>
+            <li style="margin-bottom: 10px;"><strong style="color: #93c5fd;">Why PS Numbers Don't Always Change:</strong> Because Phone Screens are the "front door," the math engine prioritizes them. Before a CE can do Evals, they must "pay their PS debt." Once the PS demand is fulfilled, <em>every remaining minute spills into Evaluation capacity</em>. That's why toggling licenses or adjusting PFA routes often swings Eval capacity wildly while PS capacity appears static—the PS bucket is already topped off first!</li>
             <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Variance Alert System:</strong> Instantly highlights deficits at each funnel stage, calculates weekly enrollment pacing, tracks cascading state distributions, and triggers warning caps if the global PFA routing parameters overwhelm your active supply.</li>
         </ul>
     </div>
@@ -382,7 +383,7 @@
     
     <div style="background: #0f172a; padding: 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 16px;">
         <h3 style="color: #93c5fd; font-size: 11px; text-transform: uppercase; margin-bottom: 8px;">Optimization Results</h3>
-        <p style="color: #cbd5e1; font-size: 12px; margin-bottom: 12px;">The engine ran 1,500 scenarios using Quadratic Variance to prioritize critical deficits, enforced Dynamic Bench Strength (scaling CE options based on state volume), and applied a Soft Focus Penalty to protect Unicorns from hoarding.</p>
+        <p style="color: #cbd5e1; font-size: 12px; margin-bottom: 12px;">The engine ran 1,500 scenarios using Quadratic Variance to prioritize critical deficits, enforced Dynamic Bench Strength (scaling CE options based on state volume), penalized allocations to zero-demand states, and applied a Soft Focus Penalty to protect Unicorns from hoarding.</p>
         
         <div style="display:flex; gap:16px;">
             <div style="flex:1; background: #1e293b; padding: 10px; border-radius: 4px; text-align:center; border: 1px solid #475569;">
@@ -648,7 +649,6 @@ function moveMonth(idx, dir) {
     let temp = ACTIVE_TIMELINE[idx]; ACTIVE_TIMELINE[idx] = ACTIVE_TIMELINE[idx + dir]; ACTIVE_TIMELINE[idx + dir] = temp;
     if (activeMonthIdx === idx) activeMonthIdx = idx + dir; else if (activeMonthIdx === idx + dir) activeMonthIdx = idx;
     
-    // Clear undo history when moving months
     window.lastMatrixBackup = null; 
     document.getElementById('undo-opt-btn').style.display = 'none';
 
@@ -948,18 +948,26 @@ function scoreMatrix(toggles) {
     
     window.optContext.states.forEach(s => {
         let st = stAlloc[s.name];
-        let variance = st.ceHours - s.reqHours;
         
-        if(variance < 0) {
-            score += Math.pow(Math.abs(variance), 2) * 10; // High quadratic penalty for deficits
+        // ZERO DEMAND RULE
+        if (s.apps === 0 || s.reqHours === 0) {
+            if (st.countOn > 0) {
+                score += st.countOn * 50000; // Force them off
+            }
         } else {
-            score += variance * 0.5; // Light linear penalty for surplus (waste)
-        }
-        
-        // Dynamic Bench Strength: More demand = more CE options needed
-        let desiredBench = Math.max(2, Math.min(st.countLic, Math.ceil(st.apps / 80) + 1));
-        if(st.countOn < desiredBench) {
-            score += (desiredBench - st.countOn) * 10000;
+            let variance = st.ceHours - s.reqHours;
+            
+            if(variance < 0) {
+                score += Math.pow(Math.abs(variance), 2) * 10; // High quadratic penalty for deficits
+            } else {
+                score += variance * 0.5; // Light linear penalty for surplus (waste)
+            }
+            
+            // Dynamic Bench Strength: More demand = more CE options needed
+            let desiredBench = Math.max(2, Math.min(st.countLic, Math.ceil(st.apps / 80) + 1));
+            if(st.countOn < desiredBench) {
+                score += (desiredBench - st.countOn) * 10000;
+            }
         }
     });
     return score;
