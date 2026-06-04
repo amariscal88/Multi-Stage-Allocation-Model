@@ -5,8 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multi-Stage Funnel WFM Suite v1.2 (Live)</title>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Firebase Compat Libraries -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -177,12 +179,14 @@
     </div>
   </div>
   
+  <!-- Right Side Buttons -->
   <div style="display: flex; gap: 8px; align-items: center;">
       <button class="btn-action" style="background: transparent; color: #94a3b8; border: 1px solid #374151; padding: 8px 12px; font-size: 10px; border-radius: 6px; transition: 0.2s;" onmouseover="this.style.color='#f8fafc'; this.style.borderColor='#64748b';" onmouseout="this.style.color='#94a3b8'; this.style.borderColor='#374151';" onclick="toggleModal('summary-modal')">ℹ️ SUMMARY</button>
       <button class="btn-action" style="background: #1f2937; color: #f8fafc; border: 1px solid #475569; padding: 8px 16px; font-size: 10px; border-radius: 6px;" onclick="toggleModal('settings-modal')">⚙️ GLOBAL VOLUME & PARAMETERS</button>
   </div>
 </div>
 
+<!-- GLOBAL PARAMETER STRIP -->
 <div class="params-strip">
     <div class="param-item"><span class="param-lbl">Vol Bump</span><div class="param-inp-wrap"><input type="number" id="mod-global-bump" onchange="triggerUpdate()"><span>%</span></div></div>
     <div style="width: 1px; height: 20px; background: #374151; margin: 0 4px;"></div>
@@ -197,13 +201,17 @@
     <div class="param-item"><span class="param-lbl">Enrollment</span><div class="param-inp-wrap"><input type="number" id="mod-global-enroll" onchange="triggerUpdate()"><span>%</span></div></div>
 </div>
 
+<!-- 50/50 SPLIT ARCHITECTURE -->
 <div class="top-50-50">
+    <!-- LEFT HALF: Narrative & High-Level Metrics -->
     <div class="top-left">
         <div class="insight-banner" id="executive-insight-banner"></div>
         <div class="stat-grid" id="top-stats-container">
-            </div>
+            <!-- Dynamically populated stat grid goes here -->
+        </div>
     </div>
 
+    <!-- RIGHT HALF: Unified Bottom-Up Funnel -->
     <div class="top-right panel">
         <h2 style="cursor: pointer; margin-bottom: 0;" onclick="toggleFunnelCollapse()">
             <span style="display:flex; align-items:center; gap:6px;">
@@ -231,6 +239,7 @@
 </div>
 
 <div class="dashboard-grid">
+  <!-- FORECAST PROJECTIONS -->
   <div class="panel span-2">
     <h2>Phone Screen (PS) Capacity vs Demand</h2>
     <div class="chart-container"><canvas id="wfmPsChart"></canvas></div>
@@ -240,6 +249,7 @@
     <div class="chart-container"><canvas id="wfmEvChart"></canvas></div>
   </div>
 
+  <!-- DUAL HEATMAP -->
   <div class="panel full-width">
     <h2 id="heat-title">State Cascading Distribution (PS & Evals)</h2>
     <div id="heatmap-summary" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
@@ -263,8 +273,15 @@
     </div>
   </div>
 
+  <!-- STATE ALLOCATION GRID -->
   <div class="panel span-3">
-    <h2 id="matrix-title-label">Mid-Funnel CE Licensure Matrix</h2>
+    <h2 id="matrix-title-label" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+      <span>Mid-Funnel CE Licensure Matrix</span>
+      <div style="display: flex; gap: 4px;">
+          <button class="btn-action" style="background: #d97706; display: none;" id="undo-opt-btn" onclick="undoOptimization()">⏪ UNDO OPTIMIZATION</button>
+          <button class="btn-action" style="background: #8b5cf6;" onclick="openOptimizerModal()">🪄 OPTIMIZE MATRIX</button>
+      </div>
+    </h2>
     <p style="font-size: 9px; color: #64748b; margin-bottom: 8px;">PFAs do not appear here as they pull from the global stateless pool. Toggling a CE 'ON' allocates their proportional time to that state.</p>
     <div style="overflow-x: auto; width: 100%; max-height: 400px; overflow-y: auto;">
       <table class="hover-row-trace" id="matrix-licensure-table" style="min-width: 1200px;">
@@ -275,6 +292,7 @@
     </div>
   </div>
 
+  <!-- PROFILE MANAGER -->
   <div class="panel span-1">
     <h2 id="mix-title" style="align-items: center; display: flex;">
       <span>CE Profile Manager</span>
@@ -283,6 +301,7 @@
     <div id="ce-controls" style="max-height: 380px; overflow-y: auto; padding-right: 5px;"></div>
   </div>
 
+  <!-- DYNAMIC ROSTER AND PTO ALLOCATION LEDGER -->
   <div class="panel full-width">
     <h2>Rolling Capacity & Role Ledger</h2>
     <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 12px;">
@@ -311,6 +330,7 @@
   </div>
 </div>
 
+<!-- DASHBOARD SUMMARY MODAL -->
 <div class="modal-overlay" id="summary-modal">
   <div class="modal-content" style="max-width: 650px; overflow-wrap: break-word;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -330,6 +350,7 @@
   </div>
 </div>
 
+<!-- DYNAMIC MONTH MANAGER MODAL -->
 <div class="modal-overlay" id="month-manager-modal">
   <div class="modal-content" style="max-width: 500px;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 10px;">
@@ -351,6 +372,45 @@
   </div>
 </div>
 
+<!-- OPTIMIZER MODAL -->
+<div class="modal-overlay" id="optimizer-modal">
+  <div class="modal-content" style="max-width: 700px;">
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
+        <h2 style="margin:0; border:none; color:#fff; font-size:15px;">🪄 State Allocation Optimizer</h2>
+        <button class="btn-action" style="background:#475569; padding: 6px 16px; font-size: 10px;" onclick="closeOptimizerModal()">CLOSE</button>
+    </div>
+    
+    <div style="background: #0f172a; padding: 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 16px;">
+        <h3 style="color: #93c5fd; font-size: 11px; text-transform: uppercase; margin-bottom: 8px;">Optimization Results</h3>
+        <p style="color: #cbd5e1; font-size: 12px; margin-bottom: 12px;">The engine ran 1,500 scenarios using Quadratic Variance to prioritize critical deficits, enforced Dynamic Bench Strength (scaling CE options based on state volume), and applied a Soft Focus Penalty to protect Unicorns from hoarding.</p>
+        
+        <div style="display:flex; gap:16px;">
+            <div style="flex:1; background: #1e293b; padding: 10px; border-radius: 4px; text-align:center; border: 1px solid #475569;">
+                <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Current Penalty Score</div>
+                <div style="font-size:20px; font-weight:bold; color:#f8fafc;" id="opt-current-score">-</div>
+            </div>
+            <div style="flex:1; background: rgba(16,185,129,0.1); padding: 10px; border-radius: 4px; text-align:center; border: 1px solid #059669;">
+                <div style="font-size:10px; color:#10b981; text-transform:uppercase;">Optimized Penalty Score</div>
+                <div style="font-size:20px; font-weight:bold; color:#10b981;" id="opt-new-score">-</div>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="font-size: 11px; color: #a5b4fc; text-transform: uppercase; margin-bottom: 8px;">Recommended Toggle Changes</h3>
+    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #374151; border-radius: 6px; background: #0f172a;">
+        <table class="compact-modal-table" style="width: 100%;">
+            <thead><tr><th>Clinician</th><th>State Territory</th><th style="text-align:center;">Current</th><th style="text-align:center;">Recommended</th></tr></thead>
+            <tbody id="opt-recommendations-tbody"></tbody>
+        </table>
+    </div>
+
+    <div style="margin-top: 16px; text-align: right;">
+        <button class="btn-action" style="background:#059669; padding: 8px 16px; font-size: 11px;" id="opt-apply-btn">APPLY RECOMMENDATIONS</button>
+    </div>
+  </div>
+</div>
+
+<!-- GLOBAL PARAMS MODAL -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -387,6 +447,7 @@
   </div>
 </div>
 
+<!-- CUSTOM ALERT/CONFIRM DIALOG -->
 <div class="modal-overlay" id="custom-dialog-overlay" style="z-index: 9999;">
   <div class="dialog-box">
     <p id="dialog-message"></p>
@@ -459,6 +520,7 @@ const EV_HANDLE = 1.0; // 60 mins
 let ACTIVE_TIMELINE = []; let LEDGER = {}; let ROSTER = {}; let FUNNEL = {}; let MASTER_STATES = [];
 let activeMonthIdx = 0; let chartPs = null; let chartEv = null;
 let ARCHIVED_TIMELINE = []; let ARCHIVED_LEDGER = {}; let ARCHIVED_ROSTER = {};
+let lastMatrixBackup = null; // Backup state for UNDO feature
 
 // --- BOOTSTRAP: OPTIMISTIC LOCAL-FIRST UI ---
 function bootstrapDataEngine() {
@@ -490,18 +552,13 @@ function hydrateDataDefaults() {
         let defaultPs = (ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4);
         let defaultEv = (ROSTER[name].role === 'PFA') ? 0 : 3;
 
-        // Migrating strict single quotas to temporal/monthly objects
         if (typeof ROSTER[name].qPs !== 'object') {
             let oldVal = ROSTER[name].qPs !== undefined ? ROSTER[name].qPs : defaultPs;
-            ROSTER[name].qPs = {};
-            ACTIVE_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal);
-            ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal);
+            ROSTER[name].qPs = {}; ACTIVE_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal); ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qPs[m] = oldVal);
         }
         if (typeof ROSTER[name].qEv !== 'object') {
             let oldVal = ROSTER[name].qEv !== undefined ? ROSTER[name].qEv : defaultEv;
-            ROSTER[name].qEv = {};
-            ACTIVE_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal);
-            ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal);
+            ROSTER[name].qEv = {}; ACTIVE_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal); ARCHIVED_TIMELINE.forEach(m => ROSTER[name].qEv[m] = oldVal);
         }
         
         if (ROSTER[name].order === undefined) ROSTER[name].order = rosterCount;
@@ -590,6 +647,11 @@ function moveMonth(idx, dir) {
     if (idx + dir < 0 || idx + dir >= ACTIVE_TIMELINE.length) return;
     let temp = ACTIVE_TIMELINE[idx]; ACTIVE_TIMELINE[idx] = ACTIVE_TIMELINE[idx + dir]; ACTIVE_TIMELINE[idx + dir] = temp;
     if (activeMonthIdx === idx) activeMonthIdx = idx + dir; else if (activeMonthIdx === idx + dir) activeMonthIdx = idx;
+    
+    // Clear undo history when moving months
+    window.lastMatrixBackup = null; 
+    document.getElementById('undo-opt-btn').style.display = 'none';
+
     saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
 
@@ -619,7 +681,9 @@ function archiveSpecificMonth(m) {
         if (ROSTER[name].qEv) ARCHIVED_ROSTER[name].qEv[m] = ROSTER[name].qEv[m];
         delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; delete ROSTER[name].qPs[m]; delete ROSTER[name].qEv[m];
     });
-    delete LEDGER[m]; activeMonthIdx = 0; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
+    delete LEDGER[m]; activeMonthIdx = 0; 
+    window.lastMatrixBackup = null; document.getElementById('undo-opt-btn').style.display = 'none';
+    saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
 
 function restoreArchivedMonth(m) {
@@ -637,7 +701,9 @@ function restoreArchivedMonth(m) {
             ROSTER[name].qEv[m] = (ROSTER[name].role === 'PFA' ? 0 : 3);
         }
     });
-    activeMonthIdx = ACTIVE_TIMELINE.length - 1; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
+    activeMonthIdx = ACTIVE_TIMELINE.length - 1; 
+    window.lastMatrixBackup = null; document.getElementById('undo-opt-btn').style.display = 'none';
+    saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
     if(document.getElementById('settings-modal').style.display === 'flex') populateGlobalModalViews(); 
 }
 
@@ -645,7 +711,9 @@ function deleteSpecificMonth(m) {
     if (ACTIVE_TIMELINE.length <= 1) { promptAlert("System limitation: You must keep at least one active tracking month in the horizon."); return; }
     ACTIVE_TIMELINE = ACTIVE_TIMELINE.filter(x => x !== m); delete LEDGER[m];
     Object.keys(ROSTER).forEach(name => { if (ROSTER[name]) { delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; if(ROSTER[name].qPs) delete ROSTER[name].qPs[m]; if(ROSTER[name].qEv) delete ROSTER[name].qEv[m]; } });
-    activeMonthIdx = 0; saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
+    activeMonthIdx = 0; 
+    window.lastMatrixBackup = null; document.getElementById('undo-opt-btn').style.display = 'none';
+    saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
 
 function deleteArchivedMonth(m) {
@@ -658,7 +726,13 @@ function buildTimelineControls() {
   const container = document.getElementById('month-tabs'); container.innerHTML = '';
   ACTIVE_TIMELINE.forEach((m, i) => {
     const btn = document.createElement('button'); btn.className = `month-btn ${i === activeMonthIdx ? 'active' : ''}`;
-    btn.innerText = m.split('_')[0]; btn.onclick = () => { activeMonthIdx = i; buildTimelineControls(); recalculateDashboardMetrics(); };
+    btn.innerText = m.split('_')[0]; 
+    btn.onclick = () => { 
+        activeMonthIdx = i; 
+        window.lastMatrixBackup = null; 
+        document.getElementById('undo-opt-btn').style.display = 'none';
+        buildTimelineControls(); recalculateDashboardMetrics(); 
+    };
     container.appendChild(btn);
   });
 }
@@ -722,14 +796,9 @@ function moveClinicianOrder(name, direction) {
     let sortedNames = Object.keys(ROSTER).sort((a,b) => (ROSTER[a].order||0) - (ROSTER[b].order||0));
     let currIdx = sortedNames.indexOf(name);
     let targetIdx = currIdx + direction;
-    
     if(targetIdx < 0 || targetIdx >= sortedNames.length) return;
-    
     let targetName = sortedNames[targetIdx];
-    let tempOrder = ROSTER[name].order;
-    ROSTER[name].order = ROSTER[targetName].order;
-    ROSTER[targetName].order = tempOrder;
-    
+    let tempOrder = ROSTER[name].order; ROSTER[name].order = ROSTER[targetName].order; ROSTER[targetName].order = tempOrder;
     saveState(); recalculateDashboardMetrics();
 }
 
@@ -737,20 +806,14 @@ function addNewClinicianToRoster() {
   const name = document.getElementById('new-clinician-name').value.trim(); const role = document.getElementById('new-clinician-role').value;
   if (!name) return; if (ROSTER[name]) { promptAlert("Resource already exists."); return; }
   let dPs = role === 'PFA' ? 10 : (role === 'LEAD' ? 3 : 4); let dEv = role === 'PFA' ? 0 : 3;
-  
-  let newOrder = Object.keys(ROSTER).length;
-  let qPsObj = {}, qEvObj = {};
+  let newOrder = Object.keys(ROSTER).length; let qPsObj = {}, qEvObj = {};
   ACTIVE_TIMELINE.forEach(m => { qPsObj[m] = dPs; qEvObj[m] = dEv; });
-  
   ROSTER[name] = { role: role, qPs: qPsObj, qEv: qEvObj, order: newOrder, profile: (role === 'PFA' ? [] : [...MASTER_STATES]), pto: {}, mix: {} };
   ACTIVE_TIMELINE.forEach(m => { ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = (role === 'PFA' ? [] : [...MASTER_STATES]); });
-  
   document.getElementById('new-clinician-name').value = ''; saveState(); recalculateDashboardMetrics();
 }
 
-function deprovisionClinician(name) {
-    if(ROSTER[name]) { delete ROSTER[name]; saveState(); recalculateDashboardMetrics(); }
-}
+function deprovisionClinician(name) { if(ROSTER[name]) { delete ROSTER[name]; saveState(); recalculateDashboardMetrics(); } }
 
 function updateMonthlyMixToggle(name, state, action) {
   let activeM = ACTIVE_TIMELINE[activeMonthIdx]; let r = ROSTER[name]; if(!r) return;
@@ -767,8 +830,7 @@ function addAllStatesToAllProviders() {
       MASTER_STATES.forEach(state => {
           if (!ROSTER[name].profile.includes(state)) ROSTER[name].profile.push(state);
           ACTIVE_TIMELINE.forEach(m => {
-              if(!ROSTER[name].mix) ROSTER[name].mix = {};
-              if(!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [];
+              if(!ROSTER[name].mix) ROSTER[name].mix = {}; if(!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [];
               if (!ROSTER[name].mix[m].includes(state)) ROSTER[name].mix[m].push(state);
           });
       });
@@ -781,11 +843,7 @@ function renderSidebarProfileManager(ceAllocations) {
   container.innerHTML = ceAllocations.map(ce => `
     <div class="ce-row">
       <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-        <strong>
-            <button class="sort-btn" onclick="moveClinicianOrder('${ce.name}', -1)">▲</button>
-            <button class="sort-btn" style="margin-right: 4px;" onclick="moveClinicianOrder('${ce.name}', 1)">▼</button>
-            ${ce.name}
-        </strong> 
+        <strong><button class="sort-btn" onclick="moveClinicianOrder('${ce.name}', -1)">▲</button><button class="sort-btn" style="margin-right: 4px;" onclick="moveClinicianOrder('${ce.name}', 1)">▼</button>${ce.name}</strong> 
         <span title="Denominator: Total demand of all active states." style="font-size:7px; color:#64748b; cursor:help;">Load: ${Math.round(ce.denom)}</span>
       </div>
       <div style="margin-bottom:6px;">
@@ -812,8 +870,7 @@ function addLicenseToProfile(name) {
     if (!ROSTER[name].profile.includes(state)) {
       ROSTER[name].profile.push(state);
       ACTIVE_TIMELINE.forEach(m => {
-        if(!ROSTER[name].mix) ROSTER[name].mix = {};
-        if(!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [];
+        if(!ROSTER[name].mix) ROSTER[name].mix = {}; if(!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [];
         if (!ROSTER[name].mix[m].includes(state)) ROSTER[name].mix[m].push(state);
       });
       saveState(); recalculateDashboardMetrics();
@@ -831,10 +888,7 @@ function removeLicenseFromProfile(name, state) {
 
 function renderVisualBar(label, dem, cap, type) {
     let pct = cap > 0 ? (dem / cap) * 100 : 0;
-    let colorClass = 'bar-green';
-    if(pct > 100) colorClass = 'bar-red';
-    else if(pct < 80) colorClass = 'bar-blue';
-    
+    let colorClass = 'bar-green'; if(pct > 100) colorClass = 'bar-red'; else if(pct < 80) colorClass = 'bar-blue';
     let wPct = Math.min(100, pct);
     return `
       <div class="bar-row">
@@ -847,6 +901,197 @@ function renderVisualBar(label, dem, cap, type) {
     `;
 }
 
+// --- OPTIMIZATION ALGORITHM (NATIVE JS SOLVER) ---
+let latestOptimizationResult = null;
+
+function openOptimizerModal() {
+    let activeMonth = ACTIVE_TIMELINE[activeMonthIdx];
+    if (!window.optContext) { promptAlert("Optimization context not ready."); return; }
+    
+    document.getElementById('optimizer-modal').style.display = 'flex';
+    document.getElementById('opt-current-score').innerText = "⏳";
+    document.getElementById('opt-new-score').innerText = "⏳";
+    document.getElementById('opt-recommendations-tbody').innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#94a3b8;">Running 1,500 greedy-search scenarios...</td></tr>`;
+    document.getElementById('opt-apply-btn').disabled = true;
+    
+    setTimeout(() => { runOptimizerEngine(); }, 100);
+}
+
+function closeOptimizerModal() { document.getElementById('optimizer-modal').style.display = 'none'; }
+
+function scoreMatrix(toggles) {
+    let stAlloc = {};
+    window.optContext.states.forEach(s => stAlloc[s.name] = { ceHours: 0, countOn: 0, countLic: 0, apps: s.apps });
+    
+    let score = 0;
+    window.optContext.ces.forEach(ce => {
+        let ceOn = [];
+        ce.profile.forEach(s => {
+            if(stAlloc[s]) {
+                stAlloc[s].countLic++;
+                if(toggles[ce.name][s]) { ceOn.push(s); stAlloc[s].countOn++; }
+            }
+        });
+        
+        if(ceOn.length > 0) {
+            let totalApps = 0;
+            ceOn.forEach(s => totalApps += window.optContext.stateMap[s].apps);
+            if(totalApps > 0) {
+                ceOn.forEach(s => {
+                    let weight = window.optContext.stateMap[s].apps / totalApps;
+                    stAlloc[s].ceHours += (ce.totalHours * weight);
+                });
+            }
+        }
+        score += ceOn.length * 0.05; // Gentle Soft Focus Penalty (Unicorn Protection)
+    });
+    
+    window.optContext.states.forEach(s => {
+        let st = stAlloc[s.name];
+        let variance = st.ceHours - s.reqHours;
+        
+        if(variance < 0) {
+            score += Math.pow(Math.abs(variance), 2) * 10; // High quadratic penalty for deficits
+        } else {
+            score += variance * 0.5; // Light linear penalty for surplus (waste)
+        }
+        
+        // Dynamic Bench Strength: More demand = more CE options needed
+        let desiredBench = Math.max(2, Math.min(st.countLic, Math.ceil(st.apps / 80) + 1));
+        if(st.countOn < desiredBench) {
+            score += (desiredBench - st.countOn) * 10000;
+        }
+    });
+    return score;
+}
+
+function runOptimizerEngine() {
+    let currentToggles = {};
+    window.optContext.ces.forEach(ce => {
+        currentToggles[ce.name] = {};
+        ce.profile.forEach(s => currentToggles[ce.name][s] = ce.currentMix.includes(s));
+    });
+    
+    let baselineScore = scoreMatrix(currentToggles);
+    let bestToggles = JSON.parse(JSON.stringify(currentToggles));
+    let bestScore = baselineScore;
+    
+    // Run 50 Scenarios
+    for(let i=0; i<50; i++) {
+        let testToggles = JSON.parse(JSON.stringify(currentToggles));
+        
+        // Random Restart Kicks
+        if (i > 0) {
+            let flips = Math.floor(Math.random() * 3) + 1;
+            for(let f=0; f<flips; f++) {
+                let ce = window.optContext.ces[Math.floor(Math.random() * window.optContext.ces.length)];
+                if(ce.profile.length > 0) {
+                    let s = ce.profile[Math.floor(Math.random() * ce.profile.length)];
+                    if(s) testToggles[ce.name][s] = !testToggles[ce.name][s];
+                }
+            }
+        }
+        
+        // Greedy Hill Climb
+        let improved = true;
+        let loops = 0;
+        while(improved && loops < 30) {
+            improved = false;
+            loops++;
+            for(let ce of window.optContext.ces) {
+                for(let s of ce.profile) {
+                    let orig = testToggles[ce.name][s];
+                    testToggles[ce.name][s] = !orig; // flip
+                    let newScore = scoreMatrix(testToggles);
+                    
+                    if(newScore < bestScore) {
+                        bestScore = newScore;
+                        bestToggles = JSON.parse(JSON.stringify(testToggles));
+                        improved = true;
+                    } else {
+                        testToggles[ce.name][s] = orig; // revert
+                    }
+                }
+            }
+        }
+    }
+    
+    latestOptimizationResult = bestToggles;
+    
+    document.getElementById('opt-current-score').innerText = Math.round(baselineScore).toLocaleString();
+    document.getElementById('opt-new-score').innerText = Math.round(bestScore).toLocaleString();
+    
+    let changesHtml = '';
+    window.optContext.ces.forEach(ce => {
+        ce.profile.forEach(s => {
+            let curr = currentToggles[ce.name][s];
+            let rec = bestToggles[ce.name][s];
+            if(curr !== rec) {
+                let currStr = curr ? '<span style="color:#10b981; font-weight:bold;">ON</span>' : '<span style="color:#ef4444; font-weight:bold;">OFF</span>';
+                let recStr = rec ? '<span style="color:#10b981; font-weight:bold;">ON</span>' : '<span style="color:#ef4444; font-weight:bold;">OFF</span>';
+                let rowBg = rec ? 'rgba(16,185,129,0.05)' : 'rgba(239,68,68,0.05)';
+                changesHtml += `<tr style="background:${rowBg};"><td style="font-weight:bold;">${ce.name}</td><td>${s}</td><td style="text-align:center;">${currStr}</td><td style="text-align:center; border-left:1px solid #374151;">${recStr}</td></tr>`;
+            }
+        });
+    });
+    
+    if(changesHtml === '') {
+        changesHtml = `<tr><td colspan="4" style="text-align:center; padding: 20px; color:#10b981; font-weight:bold;">✅ Your current matrix is already mathematically optimal!</td></tr>`;
+        document.getElementById('opt-apply-btn').disabled = true;
+    } else {
+        document.getElementById('opt-apply-btn').disabled = false;
+    }
+    
+    document.getElementById('opt-recommendations-tbody').innerHTML = changesHtml;
+}
+
+document.getElementById('opt-apply-btn').addEventListener('click', function() {
+    if(!latestOptimizationResult) return;
+    let activeMonth = ACTIVE_TIMELINE[activeMonthIdx];
+    
+    // Create Backup for Undo functionality
+    window.lastMatrixBackup = {};
+    Object.keys(ROSTER).forEach(ce => {
+        if(ROSTER[ce].role !== 'PFA') {
+            window.lastMatrixBackup[ce] = [...(ROSTER[ce].mix[activeMonth] || [])];
+        }
+    });
+
+    Object.keys(latestOptimizationResult).forEach(ceName => {
+        let recs = latestOptimizationResult[ceName];
+        let newMix = [];
+        Object.keys(recs).forEach(state => {
+            if(recs[state]) newMix.push(state);
+        });
+        if(ROSTER[ceName]) {
+            ROSTER[ceName].mix[activeMonth] = newMix;
+        }
+    });
+    
+    document.getElementById('undo-opt-btn').style.display = 'inline-block';
+    
+    saveState();
+    recalculateDashboardMetrics();
+    closeOptimizerModal();
+});
+
+function undoOptimization() {
+    if(!window.lastMatrixBackup) return;
+    let activeMonth = ACTIVE_TIMELINE[activeMonthIdx];
+    
+    Object.keys(window.lastMatrixBackup).forEach(ceName => {
+        if(ROSTER[ceName]) {
+            ROSTER[ceName].mix[activeMonth] = [...window.lastMatrixBackup[ceName]];
+        }
+    });
+    
+    window.lastMatrixBackup = null;
+    document.getElementById('undo-opt-btn').style.display = 'none';
+    
+    saveState();
+    recalculateDashboardMetrics();
+}
+
 // --- CORE MATH ENGINE (DYNAMIC TIME FLEXING) ---
 function recalculateDashboardMetrics() {
   let activeMonth = ACTIVE_TIMELINE[activeMonthIdx];
@@ -856,7 +1101,6 @@ function recalculateDashboardMetrics() {
   let mult = 1 + (FUNNEL.volBump / 100);
   let globalAppToEvRate = (FUNNEL.appToPsRate/100) * (FUNNEL.psCompRate/100) * (FUNNEL.screenInRate/100) * (FUNNEL.evSchedRate/100);
 
-  // 1. Convert Roster to Fluid Hours
   let pfaTotalHours = 0, pfaPtoTotal = 0, pfaPsCap = 0;
   let ceTotalHours = 0, cePtoTotal = 0, ceStrictPsCap = 0, ceStrictEvCap = 0;
 
@@ -881,7 +1125,6 @@ function recalculateDashboardMetrics() {
     }
   });
 
-  // 2. Base Demand
   let sysTotalApps = 0; let sysGrossPsDemand = 0; let sysGrossEvDemand = 0;
   let stateMetrics = {};
 
@@ -897,20 +1140,16 @@ function recalculateDashboardMetrics() {
     stateMetrics[s] = { apps: bumpedApps, psDemandFull: statePsDemandFull, evDemand: stateEvDemand, psCapCe: 0, evCapCe: 0, allocatedCeHours: 0, assigned: [] };
   });
 
-  // 3. Global Sweep, Cap, & Reinvestment
   let targetPfaDemand = sysGrossPsDemand * (FUNNEL.pfaRouteRate / 100);
-  let actualPfaPsYield = Math.min(targetPfaDemand, pfaPsCap); // Strict Cap
+  let actualPfaPsYield = Math.min(targetPfaDemand, pfaPsCap); 
   let pfaEffectiveSweepRate = sysGrossPsDemand > 0 ? (actualPfaPsYield / sysGrossPsDemand) : 0;
-  
   let remainingCePsDemand = sysGrossPsDemand - actualPfaPsYield;
 
   let requiredCePsHours = remainingCePsDemand * PS_HANDLE;
   let ceLeftoverHours = Math.max(0, ceTotalHours - requiredCePsHours);
   let ceFluidEvCap = ceLeftoverHours / EV_HANDLE;
 
-  // 4. Update the Unified Funnel Model
   let actualTotalPsYield = actualPfaPsYield + Math.min(remainingCePsDemand, ceTotalHours / PS_HANDLE);
-  
   let maxSystemPsCapacity = pfaPsCap + ceStrictPsCap; 
 
   let d_base = sysTotalApps;
@@ -966,7 +1205,6 @@ function recalculateDashboardMetrics() {
   document.getElementById('tbl-dem-pace').innerText = fmt(d_enroll / 4.33);
   document.getElementById('tbl-pot-pace').innerText = fmt(p_enroll / 4.33);
 
-  // 5. Heatmap State Time Allocations
   let ceAllocations = Object.keys(ROSTER)
     .filter(n => ROSTER[n].role !== 'PFA')
     .sort((a,b) => (ROSTER[a].order||0) - (ROSTER[b].order||0))
@@ -980,6 +1218,21 @@ function recalculateDashboardMetrics() {
       activeSt.forEach(s => { loadDenomApps += (stateMetrics[s] ? stateMetrics[s].apps : 0); });
       return { name, activeStates: activeSt, denom: loadDenomApps, masterProfile: r.profile, totalHours: totalH, psCapStrict: netDays * qPs, evCapStrict: netDays * qEv };
     });
+
+  // STORE CONTEXT FOR OPTIMIZER
+  window.optContext = {
+      stateMap: stateMetrics,
+      states: MASTER_STATES.map(s => {
+          return {
+              name: s,
+              apps: stateMetrics[s].apps,
+              reqHours: (stateMetrics[s].psDemandFull * (1 - pfaEffectiveSweepRate) * PS_HANDLE) + (stateMetrics[s].evDemand * EV_HANDLE)
+          };
+      }),
+      ces: ceAllocations.map(ce => {
+          return { name: ce.name, profile: ce.masterProfile, totalHours: ce.totalHours, currentMix: ce.activeStates }
+      })
+  };
 
   ceAllocations.forEach(ce => {
     if(ce.denom > 0) {
@@ -1003,7 +1256,6 @@ function recalculateDashboardMetrics() {
         }
   });
 
-  // 6. Updated Stat Grid Rendering (Dual Track Design)
   let sysPsUtilPct = (ceStrictPsCap + pfaPsCap) > 0 ? ((remainingCePsDemand + actualPfaPsYield) / (ceStrictPsCap + pfaPsCap)) * 100 : 0;
   let fluidEvUtilPct = ceFluidEvCap > 0 ? (sysGrossEvDemand / ceFluidEvCap) * 100 : 0;
 
