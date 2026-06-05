@@ -101,7 +101,7 @@
   .status-blue { color: #93c5fd; font-weight: 700; }
 
   /* MATRIX BUTTONS */
-  .matrix-btn { width: 100%; border: none; border-radius: 3px; font-size: 9px; font-weight: 700; cursor: pointer; padding: 4px 0; transition: 0.2s; }
+  .matrix-btn { border: none; border-radius: 3px; font-size: 9px; font-weight: 700; cursor: pointer; padding: 4px 0; transition: 0.2s; }
   .matrix-btn-on { background: #059669; color: #ecfdf5; border: 1px solid #34d399; }
   .matrix-btn-on:hover { background: #047857; }
   .matrix-btn-off { background: #374151; color: #94a3b8; border: 1px solid #4b5563; }
@@ -251,22 +251,18 @@
 
   <!-- DUAL HEATMAP -->
   <div class="panel full-width">
-    <h2 id="heat-title">State Cascading Distribution (PS & Evals)</h2>
+    <h2 id="heat-title" style="display: flex; align-items: center; justify-content: space-between;">
+        <span>State Cascading Distribution (PS & Evals)</span>
+        <div style="display: flex; gap: 4px;">
+            <button class="matrix-btn matrix-btn-on" id="btn-view-mo" onclick="setHeatmapView('mo')" style="width: 70px;">Monthly</button>
+            <button class="matrix-btn matrix-btn-off" id="btn-view-wk" onclick="setHeatmapView('wk')" style="width: 70px;">Weekly</button>
+        </div>
+    </h2>
     <div id="heatmap-summary" style="display: flex; gap: 8px; margin-bottom: 12px;"></div>
     <div style="overflow-y: auto; max-height: 380px;">
         <table id="heatmap-table" class="hover-row-trace">
-        <thead style="position: sticky; top: 0; background: #161b22; z-index: 10;">
-            <tr>
-            <th rowspan="2" style="border-right: 1px solid #374151;">State Territory</th>
-            <th rowspan="2" style="text-align:center; border-right: 1px solid #374151;">Accepted Apps<br><span style="font-size:7px; color:#64748b;">(Top of Funnel)</span></th>
-            <th colspan="3" style="text-align:center; border-right: 1px solid #374151; color: #93c5fd; background: rgba(59,130,246,0.05);">📞 PHONE SCREENS (CE ONLY)</th>
-            <th colspan="3" style="text-align:center; border-right: 1px solid #374151; color: #c4b5fd; background: rgba(139,92,246,0.05);">📋 EVALUATIONS</th>
-            <th rowspan="2" style="text-align:center;">Licensed CEs</th>
-            </tr>
-            <tr>
-              <th style="background: rgba(59,130,246,0.05); color:#60a5fa;">Demand</th><th style="background: rgba(59,130,246,0.05); color:#60a5fa;">Coverage</th><th style="border-right: 1px solid #374151; background: rgba(59,130,246,0.05); color:#60a5fa;">Balance</th>
-              <th style="background: rgba(139,92,246,0.05); color:#a78bfa;">Demand</th><th style="background: rgba(139,92,246,0.05); color:#a78bfa;">Coverage</th><th style="border-right: 1px solid #374151; background: rgba(139,92,246,0.05); color:#a78bfa;">Balance</th>
-            </tr>
+        <thead id="heatmap-thead" style="position: sticky; top: 0; background: #161b22; z-index: 10;">
+            <!-- Rendered via JS based on toggle -->
         </thead>
         <tbody id="heatmap-body"></tbody>
         </table>
@@ -330,6 +326,21 @@
   </div>
 </div>
 
+<!-- PTO WEEKLY MODAL -->
+<div class="modal-overlay" id="pto-weekly-modal">
+  <div class="dialog-box" style="width: 400px;">
+    <h3 style="color: #c4b5fd; margin-bottom: 16px; font-size: 14px;" id="pto-modal-title">Edit Weekly PTO</h3>
+    <p style="font-size: 11px; color: #94a3b8; margin-bottom: 16px;">Distribute PTO days into specific weeks to calculate accurate localized capacity bottlenecks.</p>
+    <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; text-align: left;" id="pto-weekly-inputs">
+        <!-- Rendered via JS -->
+    </div>
+    <div class="dialog-btns">
+      <button class="btn-action" style="background: #475569;" onclick="closePtoWeeklyModal()">Cancel</button>
+      <button class="btn-action" style="background: #10b981;" onclick="savePtoWeeklyModal()">Save Distribution</button>
+    </div>
+  </div>
+</div>
+
 <!-- DASHBOARD SUMMARY MODAL -->
 <div class="modal-overlay" id="summary-modal">
   <div class="modal-content" style="max-width: 650px; overflow-wrap: break-word;">
@@ -345,7 +356,7 @@
             <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">The 50/50 Dual View:</strong> Maps out unconstrained mathematical Demand side-by-side with your roster's true Max Potential Yield at every transition point.</li>
             <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Dynamic Time Flexing (Fluid Time):</strong> It converts rigid task quotas into a Fluid Time bank. Every PS routed to a PFA instantly frees up 30 minutes of clinical time that is immediately reinvested into Evaluation capacity.</li>
             <li style="margin-bottom: 10px;"><strong style="color: #93c5fd;">Why PS Numbers Don't Always Change:</strong> Because Phone Screens are the "front door," the math engine prioritizes them. Before a CE can do Evals, they must "pay their PS debt." Once the PS demand is fulfilled, <em>every remaining minute spills into Evaluation capacity</em>. That's why toggling licenses or adjusting PFA routes often swings Eval capacity wildly while PS capacity appears static—the PS bucket is already topped off first!</li>
-            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Variance Alert System:</strong> Instantly highlights deficits at each funnel stage, calculates weekly enrollment pacing, tracks cascading state distributions, and triggers warning caps if the global PFA routing parameters overwhelm your active supply.</li>
+            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Weekly Volatility Layer:</strong> Monthly averages can hide critical gaps. The system mathematically flattens demand across working days and matches it against specific weekly PTO distributions to calculate the exact week your funnel will break.</li>
         </ul>
     </div>
   </div>
@@ -521,7 +532,9 @@ const EV_HANDLE = 1.0; // 60 mins
 let ACTIVE_TIMELINE = []; let LEDGER = {}; let ROSTER = {}; let FUNNEL = {}; let MASTER_STATES = [];
 let activeMonthIdx = 0; let chartPs = null; let chartEv = null;
 let ARCHIVED_TIMELINE = []; let ARCHIVED_LEDGER = {}; let ARCHIVED_ROSTER = {};
-let lastMatrixBackup = null; // Backup state for UNDO feature
+let lastMatrixBackup = null; 
+let heatmapViewMode = 'mo'; // 'mo' or 'wk'
+let stateMetricsCache = {}; // Cache for weekly re-renders
 
 // --- BOOTSTRAP: OPTIMISTIC LOCAL-FIRST UI ---
 function bootstrapDataEngine() {
@@ -548,6 +561,7 @@ function hydrateDataDefaults() {
     Object.keys(ROSTER).forEach(name => {
         if (!ROSTER[name].profile) ROSTER[name].profile = [];
         if (!ROSTER[name].pto) ROSTER[name].pto = {};
+        if (!ROSTER[name].pto_weekly) ROSTER[name].pto_weekly = {};
         if (!ROSTER[name].mix) ROSTER[name].mix = {};
         
         let defaultPs = (ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4);
@@ -567,6 +581,10 @@ function hydrateDataDefaults() {
 
         ACTIVE_TIMELINE.forEach(m => {
             if (ROSTER[name].pto[m] === undefined) ROSTER[name].pto[m] = 0;
+            // Silent PTO Migration to Weekly Array
+            if (!ROSTER[name].pto_weekly[m]) {
+                ROSTER[name].pto_weekly[m] = [ROSTER[name].pto[m] || 0, 0, 0, 0, 0];
+            }
             if (!ROSTER[name].mix[m]) ROSTER[name].mix[m] = [...ROSTER[name].profile];
             if (ROSTER[name].qPs[m] === undefined) ROSTER[name].qPs[m] = defaultPs;
             if (ROSTER[name].qEv[m] === undefined) ROSTER[name].qEv[m] = defaultEv;
@@ -662,6 +680,7 @@ function addNewSpecificMonth() {
     let refMonth = ACTIVE_TIMELINE[activeMonthIdx];
     Object.keys(ROSTER).forEach(name => { 
         ROSTER[name].pto[newM] = 0; 
+        ROSTER[name].pto_weekly[newM] = [0,0,0,0,0];
         ROSTER[name].mix[newM] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile||[])]; 
         ROSTER[name].qPs[newM] = ROSTER[name].qPs[refMonth] !== undefined ? ROSTER[name].qPs[refMonth] : ((ROSTER[name].role === 'PFA') ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4));
         ROSTER[name].qEv[newM] = ROSTER[name].qEv[refMonth] !== undefined ? ROSTER[name].qEv[refMonth] : ((ROSTER[name].role === 'PFA') ? 0 : 3);
@@ -674,12 +693,13 @@ function archiveSpecificMonth(m) {
     ACTIVE_TIMELINE = ACTIVE_TIMELINE.filter(x => x !== m); if (!ARCHIVED_TIMELINE.includes(m)) ARCHIVED_TIMELINE.push(m);
     ARCHIVED_LEDGER[m] = JSON.parse(JSON.stringify(LEDGER[m])); 
     Object.keys(ROSTER).forEach(name => {
-        if (!ARCHIVED_ROSTER[name]) ARCHIVED_ROSTER[name] = { pto: {}, mix: {}, qPs: {}, qEv: {} };
+        if (!ARCHIVED_ROSTER[name]) ARCHIVED_ROSTER[name] = { pto: {}, pto_weekly: {}, mix: {}, qPs: {}, qEv: {} };
         if (ROSTER[name].pto) ARCHIVED_ROSTER[name].pto[m] = ROSTER[name].pto[m];
+        if (ROSTER[name].pto_weekly) ARCHIVED_ROSTER[name].pto_weekly[m] = [...(ROSTER[name].pto_weekly[m]||[])];
         if (ROSTER[name].mix) ARCHIVED_ROSTER[name].mix[m] = JSON.parse(JSON.stringify(ROSTER[name].mix[m] || []));
         if (ROSTER[name].qPs) ARCHIVED_ROSTER[name].qPs[m] = ROSTER[name].qPs[m];
         if (ROSTER[name].qEv) ARCHIVED_ROSTER[name].qEv[m] = ROSTER[name].qEv[m];
-        delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; delete ROSTER[name].qPs[m]; delete ROSTER[name].qEv[m];
+        delete ROSTER[name].pto[m]; delete ROSTER[name].pto_weekly[m]; delete ROSTER[name].mix[m]; delete ROSTER[name].qPs[m]; delete ROSTER[name].qEv[m];
     });
     delete LEDGER[m]; activeMonthIdx = 0; 
     window.lastMatrixBackup = null; document.getElementById('undo-opt-btn').style.display = 'none';
@@ -692,11 +712,12 @@ function restoreArchivedMonth(m) {
     Object.keys(ROSTER).forEach(name => {
         if (ARCHIVED_ROSTER[name]) {
             if (ARCHIVED_ROSTER[name].pto && ARCHIVED_ROSTER[name].pto[m] !== undefined) { ROSTER[name].pto[m] = ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].pto[m]; } else { ROSTER[name].pto[m] = 0; }
+            if (ARCHIVED_ROSTER[name].pto_weekly && ARCHIVED_ROSTER[name].pto_weekly[m] !== undefined) { ROSTER[name].pto_weekly[m] = [...ARCHIVED_ROSTER[name].pto_weekly[m]]; delete ARCHIVED_ROSTER[name].pto_weekly[m]; } else { ROSTER[name].pto_weekly[m] = [0,0,0,0,0]; }
             if (ARCHIVED_ROSTER[name].mix && ARCHIVED_ROSTER[name].mix[m] !== undefined) { ROSTER[name].mix[m] = ARCHIVED_ROSTER[name].mix[m] || [...(ROSTER[name].profile || [])]; delete ARCHIVED_ROSTER[name].mix[m]; } else { ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])]; }
             if (ARCHIVED_ROSTER[name].qPs && ARCHIVED_ROSTER[name].qPs[m] !== undefined) { ROSTER[name].qPs[m] = ARCHIVED_ROSTER[name].qPs[m]; delete ARCHIVED_ROSTER[name].qPs[m]; } else { ROSTER[name].qPs[m] = (ROSTER[name].role === 'PFA' ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4)); }
             if (ARCHIVED_ROSTER[name].qEv && ARCHIVED_ROSTER[name].qEv[m] !== undefined) { ROSTER[name].qEv[m] = ARCHIVED_ROSTER[name].qEv[m]; delete ARCHIVED_ROSTER[name].qEv[m]; } else { ROSTER[name].qEv[m] = (ROSTER[name].role === 'PFA' ? 0 : 3); }
         } else {
-            ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])];
+            ROSTER[name].pto[m] = 0; ROSTER[name].pto_weekly[m] = [0,0,0,0,0]; ROSTER[name].mix[m] = ROSTER[name].role === 'PFA' ? [] : [...(ROSTER[name].profile || [])];
             ROSTER[name].qPs[m] = (ROSTER[name].role === 'PFA' ? 10 : (ROSTER[name].role === 'LEAD' ? 3 : 4));
             ROSTER[name].qEv[m] = (ROSTER[name].role === 'PFA' ? 0 : 3);
         }
@@ -710,7 +731,7 @@ function restoreArchivedMonth(m) {
 function deleteSpecificMonth(m) {
     if (ACTIVE_TIMELINE.length <= 1) { promptAlert("System limitation: You must keep at least one active tracking month in the horizon."); return; }
     ACTIVE_TIMELINE = ACTIVE_TIMELINE.filter(x => x !== m); delete LEDGER[m];
-    Object.keys(ROSTER).forEach(name => { if (ROSTER[name]) { delete ROSTER[name].pto[m]; delete ROSTER[name].mix[m]; if(ROSTER[name].qPs) delete ROSTER[name].qPs[m]; if(ROSTER[name].qEv) delete ROSTER[name].qEv[m]; } });
+    Object.keys(ROSTER).forEach(name => { if (ROSTER[name]) { delete ROSTER[name].pto[m]; delete ROSTER[name].pto_weekly[m]; delete ROSTER[name].mix[m]; if(ROSTER[name].qPs) delete ROSTER[name].qPs[m]; if(ROSTER[name].qEv) delete ROSTER[name].qEv[m]; } });
     activeMonthIdx = 0; 
     window.lastMatrixBackup = null; document.getElementById('undo-opt-btn').style.display = 'none';
     saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
@@ -718,7 +739,7 @@ function deleteSpecificMonth(m) {
 
 function deleteArchivedMonth(m) {
     ARCHIVED_TIMELINE = ARCHIVED_TIMELINE.filter(x => x !== m); delete ARCHIVED_LEDGER[m];
-    Object.keys(ARCHIVED_ROSTER).forEach(name => { if(ARCHIVED_ROSTER[name]) { delete ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].mix[m]; if(ARCHIVED_ROSTER[name].qPs) delete ARCHIVED_ROSTER[name].qPs[m]; if(ARCHIVED_ROSTER[name].qEv) delete ARCHIVED_ROSTER[name].qEv[m]; } });
+    Object.keys(ARCHIVED_ROSTER).forEach(name => { if(ARCHIVED_ROSTER[name]) { delete ARCHIVED_ROSTER[name].pto[m]; delete ARCHIVED_ROSTER[name].pto_weekly[m]; delete ARCHIVED_ROSTER[name].mix[m]; if(ARCHIVED_ROSTER[name].qPs) delete ARCHIVED_ROSTER[name].qPs[m]; if(ARCHIVED_ROSTER[name].qEv) delete ARCHIVED_ROSTER[name].qEv[m]; } });
     saveState(); renderMonthManagerUI();
 }
 
@@ -808,8 +829,8 @@ function addNewClinicianToRoster() {
   let dPs = role === 'PFA' ? 10 : (role === 'LEAD' ? 3 : 4); let dEv = role === 'PFA' ? 0 : 3;
   let newOrder = Object.keys(ROSTER).length; let qPsObj = {}, qEvObj = {};
   ACTIVE_TIMELINE.forEach(m => { qPsObj[m] = dPs; qEvObj[m] = dEv; });
-  ROSTER[name] = { role: role, qPs: qPsObj, qEv: qEvObj, order: newOrder, profile: (role === 'PFA' ? [] : [...MASTER_STATES]), pto: {}, mix: {} };
-  ACTIVE_TIMELINE.forEach(m => { ROSTER[name].pto[m] = 0; ROSTER[name].mix[m] = (role === 'PFA' ? [] : [...MASTER_STATES]); });
+  ROSTER[name] = { role: role, qPs: qPsObj, qEv: qEvObj, order: newOrder, profile: (role === 'PFA' ? [] : [...MASTER_STATES]), pto: {}, pto_weekly: {}, mix: {} };
+  ACTIVE_TIMELINE.forEach(m => { ROSTER[name].pto[m] = 0; ROSTER[name].pto_weekly[m] = [0,0,0,0,0]; ROSTER[name].mix[m] = (role === 'PFA' ? [] : [...MASTER_STATES]); });
   document.getElementById('new-clinician-name').value = ''; saveState(); recalculateDashboardMetrics();
 }
 
@@ -964,7 +985,7 @@ function scoreMatrix(toggles) {
             }
             
             // Dynamic Bench Strength: More demand = more CE options needed
-            let desiredBench = Math.max(2, Math.min(st.countLic, Math.ceil(st.apps / 80) + 1));
+            let desiredBench = Math.max(2, Math.min(st.countLic, Math.ceil(s.apps / 80) + 1));
             if(st.countOn < desiredBench) {
                 score += (desiredBench - st.countOn) * 10000;
             }
@@ -1100,7 +1121,65 @@ function undoOptimization() {
     recalculateDashboardMetrics();
 }
 
-// --- CORE MATH ENGINE (DYNAMIC TIME FLEXING) ---
+// --- PTO WEEKLY MODAL LOGIC ---
+let activePtoEditCe = null;
+let activePtoEditMonth = null;
+
+function openPtoModal(ceName, month) {
+    activePtoEditCe = ceName;
+    activePtoEditMonth = month;
+    let r = ROSTER[ceName];
+    let weeklyPto = r.pto_weekly[month] || [0,0,0,0,0];
+    
+    document.getElementById('pto-modal-title').innerText = `Edit PTO: ${ceName} (${month.split('_')[0]})`;
+    
+    let inputsHtml = '';
+    for(let i=0; i<5; i++) {
+        inputsHtml += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:8px 12px; border-radius:4px; border:1px solid #374151;">
+                <span style="color:#94a3b8; font-weight:bold; font-size:11px;">Week ${i+1}</span>
+                <input type="number" id="pto-wk-inp-${i}" value="${weeklyPto[i]}" step="0.5" style="width:60px; font-size:12px; font-weight:bold; color:#fca5a5;">
+            </div>
+        `;
+    }
+    
+    document.getElementById('pto-weekly-inputs').innerHTML = inputsHtml;
+    document.getElementById('pto-weekly-modal').style.display = 'flex';
+}
+
+function closePtoWeeklyModal() {
+    document.getElementById('pto-weekly-modal').style.display = 'none';
+    activePtoEditCe = null;
+    activePtoEditMonth = null;
+}
+
+function savePtoWeeklyModal() {
+    if(!activePtoEditCe || !activePtoEditMonth) return;
+    
+    let total = 0;
+    let newWeekly = [];
+    for(let i=0; i<5; i++) {
+        let val = parseFloat(document.getElementById(`pto-wk-inp-${i}`).value) || 0;
+        newWeekly.push(val);
+        total += val;
+    }
+    
+    ROSTER[activePtoEditCe].pto_weekly[activePtoEditMonth] = newWeekly;
+    ROSTER[activePtoEditCe].pto[activePtoEditMonth] = total;
+    
+    saveState();
+    recalculateDashboardMetrics();
+    closePtoWeeklyModal();
+}
+
+function setHeatmapView(mode) {
+    heatmapViewMode = mode;
+    document.getElementById('btn-view-mo').className = mode === 'mo' ? 'matrix-btn matrix-btn-on' : 'matrix-btn matrix-btn-off';
+    document.getElementById('btn-view-wk').className = mode === 'wk' ? 'matrix-btn matrix-btn-on' : 'matrix-btn matrix-btn-off';
+    renderDualHeatmap(); // relies on cached stateMetrics
+}
+
+// --- CORE MATH ENGINE (DYNAMIC TIME FLEXING & WEEKLY DISTRIBUTION) ---
 function recalculateDashboardMetrics() {
   let activeMonth = ACTIVE_TIMELINE[activeMonthIdx];
   if (!activeMonth) return;
@@ -1109,6 +1188,15 @@ function recalculateDashboardMetrics() {
   let mult = 1 + (FUNNEL.volBump / 100);
   let globalAppToEvRate = (FUNNEL.appToPsRate/100) * (FUNNEL.psCompRate/100) * (FUNNEL.screenInRate/100) * (FUNNEL.evSchedRate/100);
 
+  // Array to distribute working days into 5 weeks (max 5 days per week)
+  let wdArray = [0,0,0,0,0];
+  let remainingWd = wd;
+  for(let i=0; i<5; i++) {
+      wdArray[i] = Math.min(5, remainingWd);
+      remainingWd -= wdArray[i];
+  }
+
+  // --- MONTHLY AGGREGATE CALCULATIONS ---
   let pfaTotalHours = 0, pfaPtoTotal = 0, pfaPsCap = 0;
   let ceTotalHours = 0, cePtoTotal = 0, ceStrictPsCap = 0, ceStrictEvCap = 0;
 
@@ -1117,19 +1205,15 @@ function recalculateDashboardMetrics() {
     let pto = parseFloat(r.pto[activeMonth]) || 0;
     let qPs = parseFloat(r.qPs[activeMonth]) || 0;
     let qEv = parseFloat(r.qEv[activeMonth]) || 0;
-    
     let netDays = Math.max(0, wd - pto);
     
     if (r.role === 'PFA') { 
         pfaTotalHours += (netDays * (qPs * PS_HANDLE)); 
-        pfaPsCap += (netDays * qPs);
-        pfaPtoTotal += pto; 
+        pfaPsCap += (netDays * qPs); pfaPtoTotal += pto; 
     } else { 
         let dailyH = (qPs * PS_HANDLE) + (qEv * EV_HANDLE);
         ceTotalHours += (netDays * dailyH); 
-        ceStrictPsCap += (netDays * qPs); 
-        ceStrictEvCap += (netDays * qEv);
-        cePtoTotal += pto; 
+        ceStrictPsCap += (netDays * qPs); ceStrictEvCap += (netDays * qEv); cePtoTotal += pto; 
     }
   });
 
@@ -1145,7 +1229,8 @@ function recalculateDashboardMetrics() {
     let stateEvDemand = bumpedApps * effectiveAppToEvRate;
     
     sysGrossPsDemand += statePsDemandFull; sysGrossEvDemand += stateEvDemand;
-    stateMetrics[s] = { apps: bumpedApps, psDemandFull: statePsDemandFull, evDemand: stateEvDemand, psCapCe: 0, evCapCe: 0, allocatedCeHours: 0, assigned: [] };
+    stateMetrics[s] = { apps: bumpedApps, psDemandFull: statePsDemandFull, evDemand: stateEvDemand, psCapCe: 0, evCapCe: 0, allocatedCeHours: 0, assigned: [], weekly: [] };
+    for(let w=0; w<5; w++) stateMetrics[s].weekly.push({ evDemand: 0, allocatedCeHours: 0, evCapCe: 0 });
   });
 
   let targetPfaDemand = sysGrossPsDemand * (FUNNEL.pfaRouteRate / 100);
@@ -1160,88 +1245,25 @@ function recalculateDashboardMetrics() {
   let actualTotalPsYield = actualPfaPsYield + Math.min(remainingCePsDemand, ceTotalHours / PS_HANDLE);
   let maxSystemPsCapacity = pfaPsCap + ceStrictPsCap; 
 
-  let d_base = sysTotalApps;
-  let d_bumped = d_base * mult;
-  let d_psSched = sysGrossPsDemand;
-  let d_psComp = d_psSched * (FUNNEL.psCompRate/100);
-  let d_scrIn = d_psComp * (FUNNEL.screenInRate/100);
-  let d_evSched = d_scrIn * (FUNNEL.evSchedRate/100); 
-  let d_evComp = d_evSched * (FUNNEL.evCompRate/100);
+  let d_base = sysTotalApps; let d_bumped = d_base * mult; let d_psSched = sysGrossPsDemand; let d_psComp = d_psSched * (FUNNEL.psCompRate/100);
+  let d_scrIn = d_psComp * (FUNNEL.screenInRate/100); let d_evSched = d_scrIn * (FUNNEL.evSchedRate/100); let d_evComp = d_evSched * (FUNNEL.evCompRate/100);
   let d_enroll = d_evComp * (FUNNEL.enrollRate/100);
 
-  let p_apps = d_bumped; 
-  let p_psSched = maxSystemPsCapacity; 
-  let p_psComp = p_psSched * (FUNNEL.psCompRate/100);
-  let p_scrIn = p_psComp * (FUNNEL.screenInRate/100);
-  let p_yldEvDem = p_scrIn * (FUNNEL.evSchedRate/100); 
-  let p_evSched = Math.min(p_yldEvDem, ceFluidEvCap); 
-  let p_evComp = p_evSched * (FUNNEL.evCompRate/100);
-  let p_enroll = p_evComp * (FUNNEL.enrollRate/100);
+  let p_apps = d_bumped; let p_psSched = maxSystemPsCapacity; let p_psComp = p_psSched * (FUNNEL.psCompRate/100);
+  let p_scrIn = p_psComp * (FUNNEL.screenInRate/100); let p_yldEvDem = p_scrIn * (FUNNEL.evSchedRate/100); let p_evSched = Math.min(p_yldEvDem, ceFluidEvCap); 
+  let p_evComp = p_evSched * (FUNNEL.evCompRate/100); let p_enroll = p_evComp * (FUNNEL.enrollRate/100);
 
-  document.getElementById('tbl-dem-apps').innerText = fmt(d_bumped);
-  document.getElementById('tbl-pot-apps').innerText = fmt(p_apps);
-  document.getElementById('tbl-var-apps').innerHTML = formatVar(0);
-
-  document.getElementById('tbl-dem-ps-sched').innerText = fmt(d_psSched);
-  document.getElementById('tbl-pot-ps-sched').innerText = fmt(p_psSched);
-  document.getElementById('tbl-var-ps-sched').innerHTML = formatVar(p_psSched - d_psSched);
-
-  document.getElementById('tbl-dem-ps-comp').innerText = fmt(d_psComp);
-  document.getElementById('tbl-pot-ps-comp').innerText = fmt(p_psComp);
-  document.getElementById('tbl-var-ps-comp').innerHTML = formatVar(p_psComp - d_psComp);
-
-  document.getElementById('tbl-dem-scr-in').innerText = fmt(d_scrIn);
-  document.getElementById('tbl-pot-scr-in').innerText = fmt(p_scrIn);
-  document.getElementById('tbl-var-scr-in').innerHTML = formatVar(p_scrIn - d_scrIn);
-
-  document.getElementById('tbl-dem-ev-dem').innerText = fmt(d_evSched);
-  document.getElementById('tbl-pot-ev-dem').innerText = fmt(p_yldEvDem);
-  document.getElementById('tbl-var-ev-dem').innerHTML = formatVar(p_yldEvDem - d_evSched);
-
-  document.getElementById('tbl-dem-ev-sched').innerText = fmt(d_evSched);
-  document.getElementById('tbl-pot-ev-sched').innerText = fmt(p_evSched);
-  document.getElementById('tbl-var-ev-sched').innerHTML = formatVar(p_evSched - d_evSched);
-
-  document.getElementById('tbl-dem-ev-comp').innerText = fmt(d_evComp);
-  document.getElementById('tbl-pot-ev-comp').innerText = fmt(p_evComp);
-  document.getElementById('tbl-var-ev-comp').innerHTML = formatVar(p_evComp - d_evComp);
-
-  document.getElementById('tbl-dem-enroll').innerText = fmt(d_enroll);
-  document.getElementById('tbl-pot-enroll').innerText = fmt(p_enroll);
-  document.getElementById('tbl-var-enroll').innerHTML = formatVar(p_enroll - d_enroll);
-
-  document.getElementById('tbl-dem-pace').innerText = fmt(d_enroll / 4.33);
-  document.getElementById('tbl-pot-pace').innerText = fmt(p_enroll / 4.33);
-
-  let ceAllocations = Object.keys(ROSTER)
-    .filter(n => ROSTER[n].role !== 'PFA')
-    .sort((a,b) => (ROSTER[a].order||0) - (ROSTER[b].order||0))
-    .map(name => {
+  // --- WEEKLY VOLATILITY CALCULATIONS ---
+  let ceAllocations = Object.keys(ROSTER).filter(n => ROSTER[n].role !== 'PFA').sort((a,b) => (ROSTER[a].order||0) - (ROSTER[b].order||0)).map(name => {
       let r = ROSTER[name]; let pto = parseFloat(r.pto[activeMonth]) || 0;
-      let netDays = Math.max(0, wd - pto);
-      let qPs = parseFloat(r.qPs[activeMonth]) || 0;
-      let qEv = parseFloat(r.qEv[activeMonth]) || 0;
+      let netDays = Math.max(0, wd - pto); let qPs = parseFloat(r.qPs[activeMonth]) || 0; let qEv = parseFloat(r.qEv[activeMonth]) || 0;
       let totalH = netDays * (qPs * PS_HANDLE + qEv * EV_HANDLE);
       let activeSt = r.mix[activeMonth] || []; let loadDenomApps = 0;
       activeSt.forEach(s => { loadDenomApps += (stateMetrics[s] ? stateMetrics[s].apps : 0); });
-      return { name, activeStates: activeSt, denom: loadDenomApps, masterProfile: r.profile, totalHours: totalH, psCapStrict: netDays * qPs, evCapStrict: netDays * qEv };
-    });
+      return { name, activeStates: activeSt, denom: loadDenomApps, masterProfile: r.profile, totalHours: totalH };
+  });
 
-  // STORE CONTEXT FOR OPTIMIZER
-  window.optContext = {
-      stateMap: stateMetrics,
-      states: MASTER_STATES.map(s => {
-          return {
-              name: s,
-              apps: stateMetrics[s].apps,
-              reqHours: (stateMetrics[s].psDemandFull * (1 - pfaEffectiveSweepRate) * PS_HANDLE) + (stateMetrics[s].evDemand * EV_HANDLE)
-          };
-      }),
-      ces: ceAllocations.map(ce => {
-          return { name: ce.name, profile: ce.masterProfile, totalHours: ce.totalHours, currentMix: ce.activeStates }
-      })
-  };
-
+  // Calculate Macro Monthly Heatmap Allocations
   ceAllocations.forEach(ce => {
     if(ce.denom > 0) {
       ce.activeStates.forEach(s => {
@@ -1253,16 +1275,69 @@ function recalculateDashboardMetrics() {
   MASTER_STATES.forEach(s => {
         let st = stateMetrics[s];
         st.psDemandCE = st.psDemandFull * (1 - pfaEffectiveSweepRate);
-        let requiredPsH = st.psDemandCE * PS_HANDLE;
-        
-        if (st.allocatedCeHours >= requiredPsH) {
-            st.psCapCe = st.psDemandCE; 
-            st.evCapCe = (st.allocatedCeHours - requiredPsH) / EV_HANDLE;
-        } else {
-            st.psCapCe = st.allocatedCeHours / PS_HANDLE; 
-            st.evCapCe = 0;
-        }
+        let reqPsH = st.psDemandCE * PS_HANDLE;
+        if (st.allocatedCeHours >= reqPsH) { st.psCapCe = st.psDemandCE; st.evCapCe = (st.allocatedCeHours - reqPsH) / EV_HANDLE; } else { st.psCapCe = st.allocatedCeHours / PS_HANDLE; st.evCapCe = 0; }
   });
+
+  // Loop through the 5 weeks to calculate Micro Allocations
+  for(let w=0; w<5; w++) {
+      let w_wd = wdArray[w];
+      if(w_wd <= 0) continue;
+      
+      let w_sysGrossPsDemand = sysGrossPsDemand * (w_wd / wd);
+      let w_pfaPsCap = 0;
+      
+      Object.keys(ROSTER).forEach(n => {
+          let r = ROSTER[n]; if(r.role !== 'PFA') return;
+          let w_pto = r.pto_weekly[activeMonth][w] || 0;
+          let qPs = parseFloat(r.qPs[activeMonth]) || 0;
+          w_pfaPsCap += Math.max(0, w_wd - w_pto) * qPs;
+      });
+
+      let w_targetPfaDemand = w_sysGrossPsDemand * (FUNNEL.pfaRouteRate / 100);
+      let w_actualPfaPsYield = Math.min(w_targetPfaDemand, w_pfaPsCap);
+      let w_pfaEffectiveSweepRate = w_sysGrossPsDemand > 0 ? (w_actualPfaPsYield / w_sysGrossPsDemand) : 0;
+
+      MASTER_STATES.forEach(s => {
+          stateMetrics[s].weekly[w].evDemand = stateMetrics[s].evDemand * (w_wd / wd);
+      });
+
+      ceAllocations.forEach(ce => {
+          let r = ROSTER[ce.name]; let w_pto = r.pto_weekly[activeMonth][w] || 0;
+          let qPs = parseFloat(r.qPs[activeMonth]) || 0; let qEv = parseFloat(r.qEv[activeMonth]) || 0;
+          let w_totalH = Math.max(0, w_wd - w_pto) * (qPs * PS_HANDLE + qEv * EV_HANDLE);
+          
+          if(ce.denom > 0) {
+              ce.activeStates.forEach(s => {
+                  if (stateMetrics[s]) { let weight = stateMetrics[s].apps / ce.denom; stateMetrics[s].weekly[w].allocatedCeHours += (w_totalH * weight); }
+              });
+          }
+      });
+
+      MASTER_STATES.forEach(s => {
+          let st = stateMetrics[s]; let w_st = st.weekly[w];
+          let w_psDemandCE = (st.psDemandFull * (w_wd / wd)) * (1 - w_pfaEffectiveSweepRate);
+          let w_reqPsH = w_psDemandCE * PS_HANDLE;
+          
+          if (w_st.allocatedCeHours >= w_reqPsH) { w_st.evCapCe = (w_st.allocatedCeHours - w_reqPsH) / EV_HANDLE; } else { w_st.evCapCe = 0; }
+      });
+  }
+
+  // --- CACHE & RENDER ---
+  window.stateMetricsCache = { metrics: stateMetrics, wdArray: wdArray };
+  
+  // Update DOM elements
+  document.getElementById('tbl-dem-apps').innerText = fmt(d_bumped); document.getElementById('tbl-pot-apps').innerText = fmt(p_apps); document.getElementById('tbl-var-apps').innerHTML = formatVar(0);
+  document.getElementById('tbl-dem-ps-sched').innerText = fmt(d_psSched); document.getElementById('tbl-pot-ps-sched').innerText = fmt(p_psSched); document.getElementById('tbl-var-ps-sched').innerHTML = formatVar(p_psSched - d_psSched);
+  document.getElementById('tbl-dem-ps-comp').innerText = fmt(d_psComp); document.getElementById('tbl-pot-ps-comp').innerText = fmt(p_psComp); document.getElementById('tbl-var-ps-comp').innerHTML = formatVar(p_psComp - d_psComp);
+  document.getElementById('tbl-dem-scr-in').innerText = fmt(d_scrIn); document.getElementById('tbl-pot-scr-in').innerText = fmt(p_scrIn); document.getElementById('tbl-var-scr-in').innerHTML = formatVar(p_scrIn - d_scrIn);
+  document.getElementById('tbl-dem-ev-dem').innerText = fmt(d_evSched); document.getElementById('tbl-pot-ev-dem').innerText = fmt(p_yldEvDem); document.getElementById('tbl-var-ev-dem').innerHTML = formatVar(p_yldEvDem - d_evSched);
+  document.getElementById('tbl-dem-ev-sched').innerText = fmt(d_evSched); document.getElementById('tbl-pot-ev-sched').innerText = fmt(p_evSched); document.getElementById('tbl-var-ev-sched').innerHTML = formatVar(p_evSched - d_evSched);
+  document.getElementById('tbl-dem-ev-comp').innerText = fmt(d_evComp); document.getElementById('tbl-pot-ev-comp').innerText = fmt(p_evComp); document.getElementById('tbl-var-ev-comp').innerHTML = formatVar(p_evComp - d_evComp);
+  document.getElementById('tbl-dem-enroll').innerText = fmt(d_enroll); document.getElementById('tbl-pot-enroll').innerText = fmt(p_enroll); document.getElementById('tbl-var-enroll').innerHTML = formatVar(p_enroll - d_enroll);
+  document.getElementById('tbl-dem-pace').innerText = fmt(d_enroll / 4.33); document.getElementById('tbl-pot-pace').innerText = fmt(p_enroll / 4.33);
+
+  window.optContext = { stateMap: stateMetrics, states: MASTER_STATES.map(s => { return { name: s, apps: stateMetrics[s].apps, reqHours: (stateMetrics[s].psDemandFull * (1 - pfaEffectiveSweepRate) * PS_HANDLE) + (stateMetrics[s].evDemand * EV_HANDLE) }; }), ces: ceAllocations.map(ce => { return { name: ce.name, profile: ce.masterProfile, totalHours: ce.totalHours, currentMix: ce.activeStates } }) };
 
   let sysPsUtilPct = (ceStrictPsCap + pfaPsCap) > 0 ? ((remainingCePsDemand + actualPfaPsYield) / (ceStrictPsCap + pfaPsCap)) * 100 : 0;
   let fluidEvUtilPct = ceFluidEvCap > 0 ? (sysGrossEvDemand / ceFluidEvCap) * 100 : 0;
@@ -1274,9 +1349,7 @@ function recalculateDashboardMetrics() {
     </div>
     
     <div class="stat-card-modern">
-      <div class="util-header">
-        <span>System PS Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Percentage of strictly scheduled PS capacity used.</span></div></span>
-      </div>
+      <div class="util-header"><span>System PS Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Percentage of strictly scheduled PS capacity used.</span></div></span></div>
       <div class="util-pct">${Math.round(sysPsUtilPct)}%</div>
       ${renderVisualBar('CEs', remainingCePsDemand, ceStrictPsCap, 'demand')}
       ${renderVisualBar('PFAs', actualPfaPsYield, pfaPsCap, 'demand')}
@@ -1289,9 +1362,7 @@ function recalculateDashboardMetrics() {
     </div>
 
     <div class="stat-card-modern">
-      <div class="util-header">
-        <span>CE Eval Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Shows the impact of dynamic time-flexing versus your rigid quotas.</span></div></span>
-      </div>
+      <div class="util-header"><span>CE Eval Util <div class="tooltip-container" style="display:inline-flex;"><span class="info-icon">i</span><span class="tooltip-text">Shows the impact of dynamic time-flexing versus your rigid quotas.</span></div></span></div>
       <div class="util-pct">${Math.round(fluidEvUtilPct)}%</div>
       ${renderVisualBar('Strict Quota', sysGrossEvDemand, ceStrictEvCap, 'cap')}
       ${renderVisualBar('Fluid Time', sysGrossEvDemand, ceFluidEvCap, 'cap')}
@@ -1300,8 +1371,11 @@ function recalculateDashboardMetrics() {
 
   let finalYield = Math.min(d_enroll, p_enroll);
   renderExecutiveBanner(d_evSched, ceFluidEvCap, finalYield, activeMonth);
-  renderDualHeatmap(stateMetrics); renderMatrix(ceAllocations, stateMetrics);
-  renderCollapsibleLedger(activeMonth, wd); renderSidebarProfileManager(ceAllocations); renderDualCharts();
+  renderDualHeatmap(); 
+  renderMatrix(ceAllocations, stateMetrics);
+  renderCollapsibleLedger(activeMonth, wd); 
+  renderSidebarProfileManager(ceAllocations); 
+  renderDualCharts();
 }
 
 function renderExecutiveBanner(evDem, evSup, finalYield, activeMonth) {
@@ -1315,38 +1389,103 @@ function renderExecutiveBanner(evDem, evSup, finalYield, activeMonth) {
   `;
 }
 
-function renderDualHeatmap(metrics) {
-  let countEvBlue=0, countEvGreen=0, countEvYellow=0, countEvRed=0;
-  let htmlRows = MASTER_STATES.map(s => {
-    let r = metrics[s];
-    let psPct = r.psDemandCE > 0 ? (r.psCapCe / r.psDemandCE) * 100 : 0; let psBal = Math.round(r.psCapCe - r.psDemandCE);
-    let psStr = r.psDemandCE === 0 ? '-' : `${Math.round(psPct)}%`; let psCol = psPct < 70 ? 'status-red' : (psPct < 80 ? 'status-yellow' : (psPct < 90 ? 'status-green' : 'status-blue')); let psBarColor = psPct < 70 ? '#ef4444' : (psPct < 80 ? '#eab308' : (psPct < 90 ? '#22c55e' : '#3b82f6'));
-    let evPct = r.evDemand > 0 ? (r.evCapCe / r.evDemand) * 100 : 0; let evBal = Math.round(r.evCapCe - r.evDemand);
-    let evStr = r.evDemand === 0 ? '-' : `${Math.round(evPct)}%`; let evCol = evPct < 70 ? 'status-red' : (evPct < 80 ? 'status-yellow' : (evPct < 90 ? 'status-green' : 'status-blue')); let evBarColor = evPct < 70 ? '#ef4444' : (evPct < 80 ? '#eab308' : (evPct < 90 ? '#22c55e' : '#3b82f6'));
+function renderDualHeatmap() {
+  if(!window.stateMetricsCache || !window.stateMetricsCache.metrics) return;
+  let metrics = window.stateMetricsCache.metrics;
+  let wdArray = window.stateMetricsCache.wdArray;
+  
+  let thead = document.getElementById('heatmap-thead');
+  let tbody = document.getElementById('heatmap-body');
+  let summaryContainer = document.getElementById('heatmap-summary');
+  
+  if(heatmapViewMode === 'mo') {
+      thead.innerHTML = `
+        <tr>
+        <th rowspan="2" style="border-right: 1px solid #374151;">State Territory</th>
+        <th rowspan="2" style="text-align:center; border-right: 1px solid #374151;">Apps</th>
+        <th colspan="3" style="text-align:center; border-right: 1px solid #374151; color: #93c5fd; background: rgba(59,130,246,0.05);">📞 PHONE SCREENS (CE)</th>
+        <th colspan="3" style="text-align:center; border-right: 1px solid #374151; color: #c4b5fd; background: rgba(139,92,246,0.05);">📋 EVALUATIONS</th>
+        <th rowspan="2" style="text-align:center;">Assigned</th>
+        </tr>
+        <tr>
+          <th style="background: rgba(59,130,246,0.05); color:#60a5fa;">Dem</th><th style="background: rgba(59,130,246,0.05); color:#60a5fa;">Cov</th><th style="border-right: 1px solid #374151; background: rgba(59,130,246,0.05); color:#60a5fa;">Bal</th>
+          <th style="background: rgba(139,92,246,0.05); color:#a78bfa;">Dem</th><th style="background: rgba(139,92,246,0.05); color:#a78bfa;">Cov</th><th style="border-right: 1px solid #374151; background: rgba(139,92,246,0.05); color:#a78bfa;">Bal</th>
+        </tr>
+      `;
+      
+      let countEvBlue=0, countEvGreen=0, countEvYellow=0, countEvRed=0;
+      tbody.innerHTML = MASTER_STATES.map(s => {
+        let r = metrics[s];
+        let psPct = r.psDemandCE > 0 ? (r.psCapCe / r.psDemandCE) * 100 : 0; let psBal = Math.round(r.psCapCe - r.psDemandCE);
+        let psStr = r.psDemandCE === 0 ? '-' : `${Math.round(psPct)}%`; let psCol = psPct < 70 ? 'status-red' : (psPct < 80 ? 'status-yellow' : (psPct < 90 ? 'status-green' : 'status-blue')); let psBarColor = psPct < 70 ? '#ef4444' : (psPct < 80 ? '#eab308' : (psPct < 90 ? '#22c55e' : '#3b82f6'));
+        let evPct = r.evDemand > 0 ? (r.evCapCe / r.evDemand) * 100 : 0; let evBal = Math.round(r.evCapCe - r.evDemand);
+        let evStr = r.evDemand === 0 ? '-' : `${Math.round(evPct)}%`; let evCol = evPct < 70 ? 'status-red' : (evPct < 80 ? 'status-yellow' : (evPct < 90 ? 'status-green' : 'status-blue')); let evBarColor = evPct < 70 ? '#ef4444' : (evPct < 80 ? '#eab308' : (evPct < 90 ? '#22c55e' : '#3b82f6'));
 
-    if(r.evDemand > 0) { if(evPct >= 90) countEvBlue++; else if(evPct >= 80) countEvGreen++; else if(evPct >= 70) countEvYellow++; else countEvRed++; }
+        if(r.evDemand > 0) { if(evPct >= 90) countEvBlue++; else if(evPct >= 80) countEvGreen++; else if(evPct >= 70) countEvYellow++; else countEvRed++; }
 
-    return `<tr>
-        <td style="border-right:1px solid #374151;"><strong>${s}</strong></td>
-        <td style="text-align:center; border-right:1px solid #374151; font-weight:700;">${r.apps === 0 ? '-' : fmt(r.apps)}</td>
-        <td style="background:rgba(59,130,246,0.02); text-align:center;">${r.psDemandCE===0?'-':fmt(r.psDemandCE)}</td>
-        <td style="background:rgba(59,130,246,0.02); text-align:center; font-weight:700; color:#93c5fd;">${r.psDemandCE===0?'-':fmt(r.psCapCe)} <span style="font-size:8px; font-weight:normal;" class="${r.psDemandCE>0?psCol:''}">${psStr}</span></td>
-        <td style="background:rgba(59,130,246,0.02); text-align:center; border-right:1px solid #374151;" class="${r.psDemandCE===0?'':(psBal<0?'status-red':'status-green')}"><div style="display:flex; flex-direction:column; align-items:center; gap:2px;"><span>${r.psDemandCE===0?'-':(psBal>0?'+':'')+fmt(psBal)}</span>${r.psDemandCE > 0 ? `<div class="progress-bg"><div class="progress-fill" style="width:${Math.min(100, psPct)}%; background:${psBarColor};"></div></div>` : ''}</div></td>
-        <td style="background:rgba(139,92,246,0.02); text-align:center;">${r.evDemand===0?'-':fmt(r.evDemand)}</td>
-        <td style="background:rgba(139,92,246,0.02); text-align:center; font-weight:700; color:#c4b5fd;">${r.evDemand===0?'-':fmt(r.evCapCe)} <span style="font-size:8px; font-weight:normal;" class="${r.evDemand>0?evCol:''}">${evStr}</span></td>
-        <td style="background:rgba(139,92,246,0.02); text-align:center; border-right:1px solid #374151;" class="${r.evDemand===0?'':(evBal<0?'status-red':'status-green')}"><div style="display:flex; flex-direction:column; align-items:center; gap:2px;"><span>${r.evDemand===0?'-':(evBal>0?'+':'')+fmt(evBal)}</span>${r.evDemand > 0 ? `<div class="progress-bg"><div class="progress-fill" style="width:${Math.min(100, evPct)}%; background:${evBarColor};"></div></div>` : ''}</div></td>
-        <td style="text-align:center; color:#94a3b8;">${r.assigned.length}</td>
-      </tr>`;
-  }).join('');
-  document.getElementById('heatmap-body').innerHTML = htmlRows;
-
-  const summaryContainer = document.getElementById('heatmap-summary');
-  if (summaryContainer) {
+        return `<tr>
+            <td style="border-right:1px solid #374151;"><strong>${s}</strong></td>
+            <td style="text-align:center; border-right:1px solid #374151; font-weight:700;">${r.apps === 0 ? '-' : fmt(r.apps)}</td>
+            <td style="background:rgba(59,130,246,0.02); text-align:center;">${r.psDemandCE===0?'-':fmt(r.psDemandCE)}</td>
+            <td style="background:rgba(59,130,246,0.02); text-align:center; font-weight:700; color:#93c5fd;">${r.psDemandCE===0?'-':fmt(r.psCapCe)} <span style="font-size:8px; font-weight:normal;" class="${r.psDemandCE>0?psCol:''}">${psStr}</span></td>
+            <td style="background:rgba(59,130,246,0.02); text-align:center; border-right:1px solid #374151;" class="${r.psDemandCE===0?'':(psBal<0?'status-red':'status-green')}"><div style="display:flex; flex-direction:column; align-items:center; gap:2px;"><span>${r.psDemandCE===0?'-':(psBal>0?'+':'')+fmt(psBal)}</span>${r.psDemandCE > 0 ? `<div class="progress-bg"><div class="progress-fill" style="width:${Math.min(100, psPct)}%; background:${psBarColor};"></div></div>` : ''}</div></td>
+            <td style="background:rgba(139,92,246,0.02); text-align:center;">${r.evDemand===0?'-':fmt(r.evDemand)}</td>
+            <td style="background:rgba(139,92,246,0.02); text-align:center; font-weight:700; color:#c4b5fd;">${r.evDemand===0?'-':fmt(r.evCapCe)} <span style="font-size:8px; font-weight:normal;" class="${r.evDemand>0?evCol:''}">${evStr}</span></td>
+            <td style="background:rgba(139,92,246,0.02); text-align:center; border-right:1px solid #374151;" class="${r.evDemand===0?'':(evBal<0?'status-red':'status-green')}"><div style="display:flex; flex-direction:column; align-items:center; gap:2px;"><span>${r.evDemand===0?'-':(evBal>0?'+':'')+fmt(evBal)}</span>${r.evDemand > 0 ? `<div class="progress-bg"><div class="progress-fill" style="width:${Math.min(100, evPct)}%; background:${evBarColor};"></div></div>` : ''}</div></td>
+            <td style="text-align:center; color:#94a3b8;">${r.assigned.length}</td>
+          </tr>`;
+      }).join('');
+      
+      summaryContainer.style.display = 'flex';
       summaryContainer.innerHTML = `
         <div style="flex:1; background:rgba(59,130,246,0.1); border:1px solid #3b82f6; border-radius:4px; padding:6px; text-align:center;"><div style="font-size:16px; font-weight:700; color:#93c5fd;">${countEvBlue}</div><div style="font-size:8px; color:#60a5fa; text-transform:uppercase; font-weight:bold;">Optimal Eval Cov (≥90%)</div></div>
         <div style="flex:1; background:rgba(34,197,94,0.1); border:1px solid #22c55e; border-radius:4px; padding:6px; text-align:center;"><div style="font-size:16px; font-weight:700; color:#86efac;">${countEvGreen}</div><div style="font-size:8px; color:#4ade80; text-transform:uppercase; font-weight:bold;">Healthy Eval Cov (80-89%)</div></div>
         <div style="flex:1; background:rgba(234,179,8,0.1); border:1px solid #eab308; border-radius:4px; padding:6px; text-align:center;"><div style="font-size:16px; font-weight:700; color:#fde047;">${countEvYellow}</div><div style="font-size:8px; color:#facc15; text-transform:uppercase; font-weight:bold;">Warning Eval Cov (70-79%)</div></div>
         <div style="flex:1; background:rgba(239,68,68,0.1); border:1px solid #ef4444; border-radius:4px; padding:6px; text-align:center;"><div style="font-size:16px; font-weight:700; color:#fca5a5;">${countEvRed}</div><div style="font-size:8px; color:#f87171; text-transform:uppercase; font-weight:bold;">Critical Eval Cov (<70%)</div></div>`;
+  } else {
+      let colsHtml = '';
+      for(let w=0; w<5; w++) {
+          if(wdArray[w] > 0) colsHtml += `<th style="background: rgba(139,92,246,0.05); text-align:center;">Week ${w+1}</th>`;
+      }
+      
+      thead.innerHTML = `
+        <tr>
+        <th rowspan="2" style="border-right: 1px solid #374151;">State Territory</th>
+        <th rowspan="2" style="text-align:center; border-right: 1px solid #374151;">Monthly EV Bal</th>
+        <th colspan="5" style="text-align:center; color: #c4b5fd; background: rgba(139,92,246,0.05);">WEEKLY EVALUATION VOLATILITY (COVERAGE %)</th>
+        </tr>
+        <tr>${colsHtml}</tr>
+      `;
+      
+      tbody.innerHTML = MASTER_STATES.map(s => {
+          let r = metrics[s];
+          let moEvBal = Math.round(r.evCapCe - r.evDemand);
+          let moEvStr = r.evDemand === 0 ? '-' : (moEvBal>0?'+':'')+fmt(moEvBal);
+          
+          let wksHtml = '';
+          for(let w=0; w<5; w++) {
+              if(wdArray[w] <= 0) continue;
+              let w_st = r.weekly[w];
+              let evPct = w_st.evDemand > 0 ? (w_st.evCapCe / w_st.evDemand) * 100 : 0;
+              let pctStr = w_st.evDemand === 0 ? '-' : `${Math.round(evPct)}%`;
+              let evCol = evPct < 70 ? 'status-red' : (evPct < 80 ? 'status-yellow' : (evPct < 90 ? 'status-green' : 'status-blue'));
+              let evBarColor = evPct < 70 ? '#ef4444' : (evPct < 80 ? '#eab308' : (evPct < 90 ? '#22c55e' : '#3b82f6'));
+              
+              wksHtml += `
+                <td style="background:rgba(139,92,246,0.02); text-align:center; border-left: 1px solid #1e293b;">
+                    <div style="font-weight:700;" class="${w_st.evDemand>0?evCol:''}">${pctStr}</div>
+                    ${w_st.evDemand > 0 ? `<div class="progress-bg" style="height:3px;"><div class="progress-fill" style="width:${Math.min(100, evPct)}%; background:${evBarColor};"></div></div>` : ''}
+                </td>`;
+          }
+          
+          return `<tr>
+              <td style="border-right:1px solid #374151;"><strong>${s}</strong></td>
+              <td style="text-align:center; border-right:1px solid #374151; font-weight:bold;" class="${r.evDemand===0?'':(moEvBal<0?'status-red':'status-green')}">${moEvStr}</td>
+              ${wksHtml}
+          </tr>`;
+      }).join('');
+      
+      summaryContainer.style.display = 'none';
   }
 }
 
@@ -1401,7 +1540,7 @@ function renderCollapsibleLedger(activeM, wd) {
               let mQps = r.qPs[m] || 0; let mQev = r.qEv[m] || 0;
               let capPs = Math.max(0,(mwd-pto)*mQps); let capEv = Math.max(0,(mwd-pto)*mQev);
               let capStr = role === 'PFA' ? `<span style="color:#94a3b8; font-weight:bold;">${Math.round(capPs)} PS</span>` : `<span style="color:#94a3b8; font-weight:bold;">${Math.round(capPs)} PS <span style="color:#475569; font-weight:normal;">/</span> ${Math.round(capEv)} EV</span>`;
-              return `<td><input type="number" step="0.5" value="${pto}" class="ledger-input" onchange="ROSTER['${n}'].pto['${m}']=parseFloat(this.value)||0; saveState(); recalculateDashboardMetrics();"></td><td style="text-align:center; border-right:1px solid #374151; white-space:nowrap;">${capStr}</td>`;
+              return `<td><button class="btn-action" style="background:#1e293b; color:#fca5a5; padding:2px 8px; font-weight:bold; border:1px solid #475569;" onclick="openPtoModal('${n}','${m}')">${pto}</button></td><td style="text-align:center; border-right:1px solid #374151; white-space:nowrap;">${capStr}</td>`;
           }).join('');
           
           bHtml += `<tr class="grp-${role}" data-ce-row-id="${n}">
@@ -1482,7 +1621,12 @@ async function syncPtoFromGoogleSheets(isSilent = false) {
     
     const rows = csvText.split(/\r\n|\n/).filter(r => r.trim()); if (rows.length < 2) throw new Error("CSV appears empty or malformed");
     const parsedData = rows.map(r => parseCSVRow(r));
-    let ptoCounts = {}; Object.keys(ROSTER).forEach(ce => { ptoCounts[ce] = {}; ACTIVE_TIMELINE.forEach(m => ptoCounts[ce][m] = 0); });
+    
+    let ptoCounts = {}; 
+    Object.keys(ROSTER).forEach(ce => { 
+        ptoCounts[ce] = {}; 
+        ACTIVE_TIMELINE.forEach(m => ptoCounts[ce][m] = { total: 0, weekly: [0,0,0,0,0] }); 
+    });
 
     let ceColMap = {}; let headerRowIdx = -1;
     for(let r = 0; r < Math.min(10, parsedData.length); r++) {
@@ -1499,12 +1643,31 @@ async function syncPtoFromGoogleSheets(isSilent = false) {
             let d = new Date(dateVal);
             if (!isNaN(d.getTime())) {
                 let mName = ALL_KNOWN_MONTHS[d.getMonth()]; let tMonth = ACTIVE_TIMELINE.find(m => m.startsWith(mName));
-                if (tMonth) { Object.keys(ceColMap).forEach(cIdx => { let f = parseFloat(String(row[cIdx]).trim()); if (!isNaN(f) && f > 0) ptoCounts[ceColMap[cIdx]][tMonth] += f; }); }
+                if (tMonth) { 
+                    Object.keys(ceColMap).forEach(cIdx => { 
+                        let f = parseFloat(String(row[cIdx]).trim()); 
+                        if (!isNaN(f) && f > 0) {
+                            let weekIdx = Math.floor((d.getDate() - 1) / 7);
+                            if (weekIdx > 4) weekIdx = 4;
+                            ptoCounts[ceColMap[cIdx]][tMonth].total += f;
+                            ptoCounts[ceColMap[cIdx]][tMonth].weekly[weekIdx] += f;
+                        }
+                    }); 
+                }
             }
         }
     }
 
-    Object.keys(ptoCounts).forEach(ce => { Object.keys(ptoCounts[ce]).forEach(m => { if (ptoCounts[ce][m] !== ROSTER[ce].pto[m]) { ROSTER[ce].pto[m] = ptoCounts[ce][m]; u++; } }); });
+    Object.keys(ptoCounts).forEach(ce => { 
+        Object.keys(ptoCounts[ce]).forEach(m => { 
+            if (ptoCounts[ce][m].total !== ROSTER[ce].pto[m]) { 
+                ROSTER[ce].pto[m] = ptoCounts[ce][m].total; 
+                ROSTER[ce].pto_weekly[m] = ptoCounts[ce][m].weekly;
+                u++; 
+            } 
+        }); 
+    });
+    
     saveState(); recalculateDashboardMetrics(); if (!isSilent) promptAlert(`Sync Complete! ${u} PTO entries updated.`);
   } catch (err) { console.error("Error fetching or parsing CSV:", err); if (!isSilent) promptAlert("Failed to sync: " + err.message);
   } finally { if (!isSilent) { btn.innerText = ogText; btn.disabled = false; } }
