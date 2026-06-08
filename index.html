@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Multi-Stage Funnel WFM Suite v1.2 (Live)</title>
 
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- Firebase Compat Libraries -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
@@ -190,14 +188,12 @@
     </div>
   </div>
   
-  <!-- Right Side Buttons -->
   <div style="display: flex; gap: 8px; align-items: center;">
       <button class="btn-action" style="background: transparent; color: #94a3b8; border: 1px solid #374151; padding: 8px 12px; font-size: 10px; border-radius: 6px; transition: 0.2s;" onmouseover="this.style.color='#f8fafc'; this.style.borderColor='#64748b';" onmouseout="this.style.color='#94a3b8'; this.style.borderColor='#374151';" onclick="toggleModal('summary-modal')">ℹ️ SUMMARY</button>
       <button class="btn-action" style="background: #1f2937; color: #f8fafc; border: 1px solid #475569; padding: 8px 16px; font-size: 10px; border-radius: 6px;" onclick="toggleModal('settings-modal')">⚙️ GLOBAL VOLUME & PARAMETERS</button>
   </div>
 </div>
 
-<!-- GLOBAL PARAMETER STRIP -->
 <div class="params-strip">
     <div class="param-item"><span class="param-lbl">Vol Bump</span><div class="param-inp-wrap"><input type="number" id="mod-global-bump" onchange="triggerUpdate()"><span>%</span></div></div>
     <div style="width: 1px; height: 20px; background: #374151; margin: 0 4px;"></div>
@@ -212,17 +208,13 @@
     <div class="param-item"><span class="param-lbl">Enrollment</span><div class="param-inp-wrap"><input type="number" id="mod-global-enroll" onchange="triggerUpdate()"><span>%</span></div></div>
 </div>
 
-<!-- 50/50 SPLIT ARCHITECTURE -->
 <div class="top-50-50">
-    <!-- LEFT HALF: Narrative & High-Level Metrics -->
     <div class="top-left">
         <div class="insight-banner" id="executive-insight-banner"></div>
         <div class="stat-grid" id="top-stats-container">
-            <!-- Dynamically populated stat grid goes here -->
-        </div>
+            </div>
     </div>
 
-    <!-- RIGHT HALF: Unified Bottom-Up Funnel -->
     <div class="top-right panel">
         <h2 style="cursor: pointer; margin-bottom: 0;" onclick="toggleFunnelCollapse()">
             <span style="display:flex; align-items:center; gap:6px;">
@@ -250,7 +242,6 @@
 </div>
 
 <div class="dashboard-grid">
-  <!-- FORECAST PROJECTIONS (HIDDEN BY DEFAULT) -->
   <div id="charts-wrapper" style="display: none; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; grid-column: span 4;">
       <div class="panel span-2">
         <h2>Phone Screen (PS) Capacity vs Demand</h2>
@@ -262,7 +253,6 @@
       </div>
   </div>
 
-  <!-- DUAL HEATMAP -->
   <div class="panel full-width">
     <h2 id="heat-title" style="display: flex; align-items: center; justify-content: space-between;">
         <div style="display:flex; align-items:center; gap:12px;">
@@ -278,14 +268,12 @@
     <div style="overflow-y: auto; max-height: 380px;">
         <table id="heatmap-table" class="hover-row-trace">
         <thead id="heatmap-thead" style="position: sticky; top: 0; background: #161b22; z-index: 10;">
-            <!-- Rendered via JS based on toggle -->
-        </thead>
+            </thead>
         <tbody id="heatmap-body"></tbody>
         </table>
     </div>
   </div>
 
-  <!-- STATE ALLOCATION GRID -->
   <div class="panel span-3">
     <h2 id="matrix-title-label" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
       <span>Mid-Funnel CE Licensure Matrix</span>
@@ -304,7 +292,6 @@
     </div>
   </div>
 
-  <!-- PROFILE MANAGER -->
   <div class="panel span-1">
     <h2 id="mix-title" style="align-items: center; display: flex;">
       <span>CE Profile Manager</span>
@@ -313,7 +300,6 @@
     <div id="ce-controls" style="max-height: 380px; overflow-y: auto; padding-right: 5px;"></div>
   </div>
 
-  <!-- DYNAMIC ROSTER AND PTO ALLOCATION LEDGER -->
   <div class="panel full-width">
     <h2>Rolling Capacity & Role Ledger</h2>
     <div style="display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 10px 14px; border-radius: 6px; border: 1px solid #374151; margin-bottom: 12px;">
@@ -342,14 +328,12 @@
   </div>
 </div>
 
-<!-- PTO WEEKLY MODAL -->
 <div class="modal-overlay" id="pto-weekly-modal">
   <div class="dialog-box" style="width: 400px;">
     <h3 style="color: #c4b5fd; margin-bottom: 16px; font-size: 14px;" id="pto-modal-title">Edit Weekly PTO</h3>
     <p style="font-size: 11px; color: #94a3b8; margin-bottom: 16px;">Distribute PTO days into specific weeks to calculate accurate localized capacity bottlenecks.</p>
     <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; text-align: left;" id="pto-weekly-inputs">
-        <!-- Rendered via JS -->
-    </div>
+        </div>
     <div class="dialog-btns">
       <button class="btn-action" style="background: #475569;" onclick="closePtoWeeklyModal()">Cancel</button>
       <button class="btn-action" style="background: #10b981;" onclick="savePtoWeeklyModal()">Save Distribution</button>
@@ -357,7 +341,6 @@
   </div>
 </div>
 
-<!-- DASHBOARD SUMMARY MODAL -->
 <div class="modal-overlay" id="summary-modal">
   <div class="modal-content" style="max-width: 650px; overflow-wrap: break-word;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -369,16 +352,14 @@
         <p style="margin-bottom: 20px;"><strong style="color: #c4b5fd;">Core Focus:</strong> This is the definitive "Command Center" dashboard that highlights exactly where the pipeline will choke on a monthly and weekly basis. It bridges your marketing numbers with your physical roster limitations.</p>
         <h3 style="color: #f8fafc; font-size: 14px; margin-bottom: 10px; border-bottom: 1px dotted #374151; padding-bottom: 6px;">Key Features & Logic</h3>
         <ul style="padding-left: 24px; list-style-type: disc;">
-            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">The 50/50 Dual View:</strong> Maps out unconstrained mathematical Demand side-by-side with your roster's true Max Potential Yield at every transition point.</li>
             <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Dynamic Time Flexing (Fluid Time):</strong> It converts rigid task quotas into a Fluid Time bank. Every PS routed to a PFA instantly frees up 30 minutes of clinical time that is immediately reinvested into Evaluation capacity.</li>
+            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Smart Stitching (Cross-Boundary Weeks):</strong> The engine detects weeks that bridge two months. Clicking a Split Week in "God Mode" instantly pulls data from the adjacent month, presenting a unified 5-day continuous view for supervisor triage without corrupting your monthly aggregates.</li>
             <li style="margin-bottom: 10px;"><strong style="color: #93c5fd;">Why PS Numbers Don't Always Change:</strong> Because Phone Screens are the "front door," the math engine prioritizes them. Before a CE can do Evals, they must "pay their PS debt." Once the PS demand is fulfilled, <em>every remaining minute spills into Evaluation capacity</em>. That's why toggling licenses or adjusting PFA routes often swings Eval capacity wildly while PS capacity appears static—the PS bucket is already topped off first!</li>
-            <li style="margin-bottom: 10px;"><strong style="color: #e2e8f0;">Weekly Volatility Layer:</strong> Monthly averages can hide critical gaps. The system mathematically flattens demand across working days and matches it against specific weekly PTO distributions to calculate the exact week your funnel will break.</li>
         </ul>
     </div>
   </div>
 </div>
 
-<!-- DYNAMIC MONTH MANAGER MODAL -->
 <div class="modal-overlay" id="month-manager-modal">
   <div class="modal-content" style="max-width: 500px;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 10px;">
@@ -400,7 +381,6 @@
   </div>
 </div>
 
-<!-- OPTIMIZER MODAL -->
 <div class="modal-overlay" id="optimizer-modal">
   <div class="modal-content" style="max-width: 700px;">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -438,7 +418,6 @@
   </div>
 </div>
 
-<!-- GLOBAL PARAMS MODAL -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal-content">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #374151; padding-bottom: 12px;">
@@ -475,7 +454,6 @@
   </div>
 </div>
 
-<!-- CUSTOM ALERT/CONFIRM DIALOG -->
 <div class="modal-overlay" id="custom-dialog-overlay" style="z-index: 9999;">
   <div class="dialog-box">
     <p id="dialog-message"></p>
@@ -592,8 +570,7 @@ function getCalendarWeeks(monthStr) {
                     end: new Date(weekEnd),     
                     bizStart: bizStart,
                     bizEnd: bizEnd,
-                    wd: wdCount,
-                    label: `Week ${weeks.length + 1} (${bizStart.getMonth()+1}/${bizStart.getDate()}-${bizEnd.getMonth()+1}/${bizEnd.getDate()})`
+                    wd: wdCount
                 });
             }
         }
@@ -605,9 +582,76 @@ function getCalendarWeeks(monthStr) {
         weeks[4].wd += last.wd;
         weeks[4].end = last.end;
         weeks[4].bizEnd = last.bizEnd;
-        weeks[4].label = `Week 5 (${weeks[4].bizStart.getMonth()+1}/${weeks[4].bizStart.getDate()}-${last.bizEnd.getMonth()+1}/${last.bizEnd.getDate()})`;
     }
+    
+    for(let i=0; i<weeks.length; i++) {
+        let w = weeks[i];
+        let label = `Week ${i+1} (${w.bizStart.getMonth()+1}/${w.bizStart.getDate()}-${w.bizEnd.getMonth()+1}/${w.bizEnd.getDate()})`;
+        if (i === 0 && w.bizStart.getDay() > 1 && w.bizStart.getDay() <= 5) label += " ⤄";
+        if (i === weeks.length - 1 && w.bizEnd.getDay() >= 1 && w.bizEnd.getDay() < 5) label += " ⤄";
+        w.label = label;
+    }
+    
     return weeks;
+}
+
+// --- QUICK CROSS-MONTH STITCH CALCULATION ---
+function getQuickWeekStats(mName, wIdx) {
+    let wd = LEDGER[mName].wd;
+    let cWeeks = getCalendarWeeks(mName);
+    if(!cWeeks || !cWeeks[wIdx]) return null;
+    let w_wd = cWeeks[wIdx].wd;
+    if(w_wd <= 0) return null;
+
+    let mult = 1 + (FUNNEL.volBump / 100);
+    let globalAppToEvRate = (FUNNEL.appToPsRate/100) * (FUNNEL.psCompRate/100) * (FUNNEL.screenInRate/100) * (FUNNEL.evSchedRate/100);
+    
+    let m_apps=0, m_psDem=0, m_evDem=0;
+    MASTER_STATES.forEach(s => {
+        let a = (LEDGER[mName].apps[s]||0)*mult; m_apps += a;
+        m_psDem += (a * (FUNNEL.appToPsRate/100));
+        let conv = LEDGER[mName].conv[s] || 0;
+        m_evDem += (a * (conv > 0 ? conv/100 : globalAppToEvRate));
+    });
+
+    let w_apps = m_apps * (w_wd / wd);
+    let w_psDem = m_psDem * (w_wd / wd);
+    let w_evDem = m_evDem * (w_wd / wd);
+
+    let w_pfaPsCap = 0, w_ceStrictPsCap = 0, w_ceStrictEvCap = 0, w_ceTotalH = 0, w_cePto = 0, w_pfaPto = 0;
+
+    Object.keys(ROSTER).forEach(n => {
+        let r = ROSTER[n];
+        let ptoArr = r.pto_weekly[mName] || [0,0,0,0,0];
+        let w_pto = ptoArr[wIdx] || 0;
+        let qPs = parseFloat(r.qPs[mName]) || 0;
+        let qEv = parseFloat(r.qEv[mName]) || 0;
+        let net = Math.max(0, w_wd - w_pto);
+
+        if(r.role === 'PFA') {
+            w_pfaPsCap += (net * qPs);
+            w_pfaPto += w_pto;
+        } else {
+            w_ceStrictPsCap += (net * qPs);
+            w_ceStrictEvCap += (net * qEv);
+            w_ceTotalH += (net * (qPs*PS_HANDLE + qEv*EV_HANDLE));
+            w_cePto += w_pto;
+        }
+    });
+
+    let w_actualPfaYield = Math.min(w_psDem * (FUNNEL.pfaRouteRate/100), w_pfaPsCap);
+    let w_remCePsDem = w_psDem - w_actualPfaYield;
+    let reqCePsH = w_remCePsDem * PS_HANDLE;
+    let w_fluidEvCap = Math.max(0, w_ceTotalH - reqCePsH) / EV_HANDLE;
+
+    return {
+        apps: w_apps,
+        cePsDem: w_remCePsDem, cePsCap: w_ceStrictPsCap,
+        pfaPsDem: w_actualPfaYield, pfaPsCap: w_pfaPsCap,
+        ptoCe: w_cePto, ptoPfa: w_pfaPto,
+        evStrictDem: w_evDem, evStrictCap: w_ceStrictEvCap, evFluidCap: w_fluidEvCap,
+        bizStart: cWeeks[wIdx].bizStart, bizEnd: cWeeks[wIdx].bizEnd
+    };
 }
 
 
@@ -665,6 +709,7 @@ function hydrateDataDefaults() {
 
         ACTIVE_TIMELINE.forEach(m => {
             if (ROSTER[name].pto[m] === undefined) ROSTER[name].pto[m] = 0;
+            // Silent PTO Migration to Weekly Array fallback
             if (!ROSTER[name].pto_weekly[m]) {
                 ROSTER[name].pto_weekly[m] = [ROSTER[name].pto[m] || 0, 0, 0, 0, 0];
             }
@@ -752,7 +797,7 @@ function moveMonth(idx, dir) {
     
     window.lastMatrixBackup = null; 
     document.getElementById('undo-opt-btn').style.display = 'none';
-    activeWeekFilter = null; 
+    activeWeekFilter = null; // reset god mode
 
     saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
@@ -1499,24 +1544,70 @@ function recalculateDashboardMetrics() {
 
   window.optContext = { stateMap: stateMetrics, states: MASTER_STATES.map(s => { return { name: s, apps: stateMetrics[s].apps, reqHours: (stateMetrics[s].psDemandFull * (1 - pfaEffectiveSweepRate) * PS_HANDLE) + (stateMetrics[s].evDemand * EV_HANDLE) }; }), ces: ceAllocations.map(ce => { return { name: ce.name, profile: ce.masterProfile, totalHours: ce.totalHours, currentMix: ce.activeStates } }) };
 
-  // DYNAMIC RENDER OF TOP 4 BOXES (Monthly vs God Mode)
+  // DYNAMIC RENDER OF TOP 4 BOXES (Monthly vs God Mode + Smart Stitching)
   let sysPsUtilPct = (ceStrictPsCap + pfaPsCap) > 0 ? ((remainingCePsDemand + actualPfaPsYield) / (ceStrictPsCap + pfaPsCap)) * 100 : 0;
   let fluidEvUtilPct = ceFluidEvCap > 0 ? (sysGrossEvDemand / ceFluidEvCap) * 100 : 0;
   
-  let d_apps = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].apps : sysTotalApps;
-  let d_psUtilPct = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].psUtil : sysPsUtilPct;
-  let d_cePsDem = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].cePsDemand : remainingCePsDemand;
-  let d_cePsCap = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].cePsCap : ceStrictPsCap;
-  let d_pfaPsDem = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].pfaPsDemand : actualPfaPsYield;
-  let d_pfaPsCap = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].pfaPsCap : pfaPsCap;
-  
-  let d_ptoCe = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].ptoCe : cePtoTotal;
-  let d_ptoPfa = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].ptoPfa : pfaPtoTotal;
-  
-  let d_evUtilPct = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].evUtil : fluidEvUtilPct;
-  let d_evDem = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].evStrictDem : sysGrossEvDemand;
-  let d_evStrictCap = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].evStrictCap : ceStrictEvCap;
-  let d_evFluidCap = activeWeekFilter !== null ? sysWeeklyMetrics[activeWeekFilter].evFluidCap : ceFluidEvCap;
+  let d_apps = sysTotalApps;
+  let d_psUtilPct = sysPsUtilPct;
+  let d_cePsDem = remainingCePsDemand; let d_cePsCap = ceStrictPsCap;
+  let d_pfaPsDem = actualPfaPsYield; let d_pfaPsCap = pfaPsCap;
+  let d_ptoCe = cePtoTotal; let d_ptoPfa = pfaPtoTotal;
+  let d_evUtilPct = fluidEvUtilPct;
+  let d_evDem = sysGrossEvDemand; let d_evStrictCap = ceStrictEvCap; let d_evFluidCap = ceFluidEvCap;
+
+  let unifiedTitle = null;
+  let dateRangeStr = "";
+
+  if (activeWeekFilter !== null && calWeeks[activeWeekFilter]) {
+      let aw = calWeeks[activeWeekFilter];
+      
+      // Load base stats for the current week slice
+      d_apps = sysWeeklyMetrics[activeWeekFilter].apps;
+      d_cePsDem = sysWeeklyMetrics[activeWeekFilter].cePsDemand;
+      d_cePsCap = sysWeeklyMetrics[activeWeekFilter].cePsCap;
+      d_pfaPsDem = sysWeeklyMetrics[activeWeekFilter].pfaPsDemand;
+      d_pfaPsCap = sysWeeklyMetrics[activeWeekFilter].pfaPsCap;
+      d_ptoCe = sysWeeklyMetrics[activeWeekFilter].ptoCe;
+      d_ptoPfa = sysWeeklyMetrics[activeWeekFilter].ptoPfa;
+      d_evDem = sysWeeklyMetrics[activeWeekFilter].evStrictDem;
+      d_evStrictCap = sysWeeklyMetrics[activeWeekFilter].evStrictCap;
+      d_evFluidCap = sysWeeklyMetrics[activeWeekFilter].evFluidCap;
+
+      // Smart Stitching Logic for Cross-Boundary Weeks
+      let forwardSplit = aw.bizEnd.getDay() >= 1 && aw.bizEnd.getDay() < 5;
+      let backwardSplit = aw.bizStart.getDay() > 1 && aw.bizStart.getDay() <= 5;
+      
+      let stitch = null;
+      if (forwardSplit && activeMonthIdx < ACTIVE_TIMELINE.length - 1) {
+          stitch = getQuickWeekStats(ACTIVE_TIMELINE[activeMonthIdx + 1], 0);
+      } else if (backwardSplit && activeMonthIdx > 0) {
+          let prevM = ACTIVE_TIMELINE[activeMonthIdx - 1];
+          let pWeeks = getCalendarWeeks(prevM);
+          if(pWeeks) stitch = getQuickWeekStats(prevM, pWeeks.length - 1);
+      }
+
+      if (stitch) {
+          // Merge stats across month boundary to create unified operational 5-day week
+          d_apps += stitch.apps;
+          d_cePsDem += stitch.cePsDem; d_cePsCap += stitch.cePsCap;
+          d_pfaPsDem += stitch.pfaPsDem; d_pfaPsCap += stitch.pfaPsCap;
+          d_ptoCe += stitch.ptoCe; d_ptoPfa += stitch.ptoPfa;
+          d_evDem += stitch.evStrictDem; d_evStrictCap += stitch.evStrictCap; d_evFluidCap += stitch.evFluidCap;
+          
+          unifiedTitle = `UNIFIED SPLIT-WEEK VIEW`;
+          
+          let minStart = aw.bizStart < stitch.bizStart ? aw.bizStart : stitch.bizStart;
+          let maxEnd = aw.bizEnd > stitch.bizEnd ? aw.bizEnd : stitch.bizEnd;
+          dateRangeStr = `${minStart.getMonth()+1}/${minStart.getDate()} - ${maxEnd.getMonth()+1}/${maxEnd.getDate()}`;
+      } else {
+          dateRangeStr = `${aw.bizStart.getMonth()+1}/${aw.bizStart.getDate()} - ${aw.bizEnd.getMonth()+1}/${aw.bizEnd.getDate()}`;
+      }
+
+      // Recalculate Combined Utilizations
+      d_psUtilPct = (d_cePsCap + d_pfaPsCap) > 0 ? ((d_cePsDem + d_pfaPsDem) / (d_cePsCap + d_pfaPsCap)) * 100 : 0;
+      d_evUtilPct = d_evFluidCap > 0 ? (d_evDem / d_evFluidCap) * 100 : 0;
+  }
 
   let enrollRate = FUNNEL.enrollRate / 100;
   let finalYield = activeWeekFilter !== null 
@@ -1550,7 +1641,7 @@ function recalculateDashboardMetrics() {
     </div>
   `;
 
-  renderExecutiveBanner(d_evDem, d_evFluidCap, finalYield, activeMonth);
+  renderExecutiveBanner(d_evDem, d_evFluidCap, finalYield, activeMonth, unifiedTitle, dateRangeStr);
   renderDualHeatmap(); 
   renderMatrix(ceAllocations, stateMetrics);
   renderCollapsibleLedger(activeMonth, wd); 
@@ -1558,18 +1649,20 @@ function recalculateDashboardMetrics() {
   renderDualCharts();
 }
 
-function renderExecutiveBanner(evDem, evSup, finalYield, activeMonth) {
+function renderExecutiveBanner(evDem, evSup, finalYield, activeMonth, customTitle, dateRangeStr) {
   const container = document.getElementById('executive-insight-banner'); if (!container) return;
   let evShort = Math.max(0, evDem - evSup);
-  let bannerPrefix = activeWeekFilter !== null ? `WEEK ${activeWeekFilter + 1} TACTICAL DRILL-DOWN:` : `MONTHLY INSIGHT ANALYSIS:`;
+  
+  let title = customTitle || `MONTHLY INSIGHT ANALYSIS: ${activeMonth.split('_')[0].toUpperCase()}`;
+  if(dateRangeStr && !customTitle) title = `WEEK ${activeWeekFilter + 1} TACTICAL DRILL-DOWN (${dateRangeStr})`;
   
   if (activeWeekFilter !== null) container.classList.add('wk-mode'); else container.classList.remove('wk-mode');
 
   container.innerHTML = `
-    <h3>${bannerPrefix} ${activeMonth.split('_')[0].toUpperCase()}</h3>
+    <h3>${title}</h3>
     <p><strong>Evaluation Bottleneck Status:</strong> The Demand pipeline requests <strong>${fmt(evDem)} Eval slots</strong>. Using dynamically flexed clinical hours, the CE Roster physically provides <strong>${fmt(evSup)} Schedulable Slots</strong> net of PTO.</p>
     ${evShort > 0 ? `<p style="color:#fca5a5; margin-top:6px;">⚠️ Mid-Funnel Deficit: We are short ${fmt(evShort)} Evaluation slots compared to baseline demand.</p>` : `<p style="color:#86efac; margin-top:6px;">✅ Eval Queue is adequately staffed.</p>`}
-    <p style="margin-top: 6px;"><strong>Actual Enrollment Yield:</strong> Constraining the pipeline by physical PS limits and EV limits, the system projects <strong>${fmt(finalYield)} Actual Enrollments</strong> for this ${activeWeekFilter !== null ? 'week' : 'cohort'}.</p>
+    <p style="margin-top: 6px;"><strong>Actual Enrollment Yield:</strong> Constraining the pipeline by physical PS limits and EV limits, the system projects <strong>${fmt(finalYield)} Actual Enrollments</strong> for this ${activeWeekFilter !== null ? 'timeframe' : 'cohort'}.</p>
   `;
 }
 
@@ -1776,7 +1869,7 @@ function renderDualCharts() {
       let wd = LEDGER[m].wd; let mult = 1+(FUNNEL.volBump/100); let tDemPS=0, tDemEV=0;
       MASTER_STATES.forEach(s => {
           let a = (LEDGER[m].apps[s]||0)*mult; tDemPS += (a * (FUNNEL.appToPsRate/100));
-          let convOver = LEDGER[m].conv[s] || 0; tDemEV += (a * (convOver > 0 ? convOver/100 : globalAppToEv));
+          let convOver = LEDGER[m].conv[s] || 0; tDemEV += (a * (convOver > 0 ? convOver/100 : globalAppToEvRate));
       });
       psDem.push(Math.round(tDemPS)); evDem.push(Math.round(tDemEV));
 
