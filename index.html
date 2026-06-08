@@ -543,12 +543,73 @@ function promptConfirm(message, actionFunc) {
 }
 function closeDialog() { document.getElementById('custom-dialog-overlay').style.display = 'none'; }
 
-// --- CONSTANTS ---
+// --- CONSTANTS & CALENDAR LOGIC ---
 const ALL_KNOWN_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DEFAULT_STATE_LIST = ["MA","NJ","NH","CT","NY","PA","RI","ME","VA","OH","TX","IL","DC","FL","NC","GA","SC","MD","DE","WV","MO","WI","NV","AZ","CO","NM","MT","OK"];
-const WEEK_LABELS = ["Week 1 (1st-7th)", "Week 2 (8th-14th)", "Week 3 (15th-21st)", "Week 4 (22nd-28th)", "Week 5 (29th+)"];
 const PS_HANDLE = 0.5; // 30 mins
 const EV_HANDLE = 1.0; // 60 mins
+
+function getCalendarWeeks(monthStr) {
+    let cleanName = monthStr.split('_')[0].trim();
+    let monthIdx = ALL_KNOWN_MONTHS.findIndex(m => cleanName.toLowerCase().startsWith(m.toLowerCase()));
+    if (monthIdx === -1) return null; 
+
+    let year = new Date().getFullYear();
+    let match = cleanName.match(/\d{4}/);
+    if(match) year = parseInt(match[0]);
+
+    let weeks = [];
+    let date = new Date(year, monthIdx, 1);
+    
+    while (date.getMonth() === monthIdx) {
+        let weekStart = new Date(date);
+        let day = weekStart.getDay();
+        let diffToMon = day === 0 ? -6 : -(day - 1);
+        weekStart.setDate(weekStart.getDate() + diffToMon);
+        
+        let weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6); 
+        
+        let wdCount = 0;
+        let bizStart = null;
+        let bizEnd = null;
+        
+        let d = new Date(weekStart);
+        for(let i=0; i<7; i++) {
+            if (d.getMonth() === monthIdx && d.getDay() !== 0 && d.getDay() !== 6) {
+                wdCount++;
+                if(!bizStart) bizStart = new Date(d);
+                bizEnd = new Date(d);
+            }
+            d.setDate(d.getDate() + 1);
+        }
+        
+        if (wdCount > 0) {
+            let exists = weeks.find(w => w.start.getTime() === weekStart.getTime());
+            if(!exists) {
+                weeks.push({
+                    start: new Date(weekStart), 
+                    end: new Date(weekEnd),     
+                    bizStart: bizStart,
+                    bizEnd: bizEnd,
+                    wd: wdCount,
+                    label: `Week ${weeks.length + 1} (${bizStart.getMonth()+1}/${bizStart.getDate()}-${bizEnd.getMonth()+1}/${bizEnd.getDate()})`
+                });
+            }
+        }
+        date.setDate(date.getDate() + 1);
+    }
+    
+    while(weeks.length > 5) {
+        let last = weeks.pop();
+        weeks[4].wd += last.wd;
+        weeks[4].end = last.end;
+        weeks[4].bizEnd = last.bizEnd;
+        weeks[4].label = `Week 5 (${weeks[4].bizStart.getMonth()+1}/${weeks[4].bizStart.getDate()}-${last.bizEnd.getMonth()+1}/${last.bizEnd.getDate()})`;
+    }
+    return weeks;
+}
+
 
 // --- INITIAL STATE ---
 let ACTIVE_TIMELINE = []; let LEDGER = {}; let ROSTER = {}; let FUNNEL = {}; let MASTER_STATES = [];
@@ -604,7 +665,6 @@ function hydrateDataDefaults() {
 
         ACTIVE_TIMELINE.forEach(m => {
             if (ROSTER[name].pto[m] === undefined) ROSTER[name].pto[m] = 0;
-            // Silent PTO Migration to Weekly Array fallback
             if (!ROSTER[name].pto_weekly[m]) {
                 ROSTER[name].pto_weekly[m] = [ROSTER[name].pto[m] || 0, 0, 0, 0, 0];
             }
@@ -692,7 +752,7 @@ function moveMonth(idx, dir) {
     
     window.lastMatrixBackup = null; 
     document.getElementById('undo-opt-btn').style.display = 'none';
-    activeWeekFilter = null; // reset god mode
+    activeWeekFilter = null; 
 
     saveState(); renderMonthManagerUI(); buildTimelineControls(); recalculateDashboardMetrics();
 }
@@ -779,7 +839,7 @@ function buildTimelineControls() {
         activeMonthIdx = i; 
         window.lastMatrixBackup = null; 
         document.getElementById('undo-opt-btn').style.display = 'none';
-        activeWeekFilter = null; // reset filter on tab change
+        activeWeekFilter = null; 
         buildTimelineControls(); recalculateDashboardMetrics(); 
     };
     container.appendChild(btn);
@@ -1161,11 +1221,13 @@ function openPtoModal(ceName, month) {
     
     document.getElementById('pto-modal-title').innerText = `Edit PTO: ${ceName} (${month.split('_')[0]})`;
     
+    let labels = window.stateMetricsCache && window.stateMetricsCache.weekLabels ? window.stateMetricsCache.weekLabels : WEEK_LABELS;
+    
     let inputsHtml = '';
     for(let i=0; i<5; i++) {
         inputsHtml += `
             <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:8px 12px; border-radius:4px; border:1px solid #374151;">
-                <span style="color:#94a3b8; font-weight:bold; font-size:11px;">${WEEK_LABELS[i]}</span>
+                <span style="color:#94a3b8; font-weight:bold; font-size:11px;">${labels[i] || `Week ${i+1}`}</span>
                 <input type="number" id="pto-wk-inp-${i}" value="${weeklyPtoArr[i]}" step="0.5" style="width:60px; font-size:12px; font-weight:bold; color:#fca5a5;">
             </div>
         `;
@@ -1230,12 +1292,26 @@ function recalculateDashboardMetrics() {
   let mult = 1 + (FUNNEL.volBump / 100);
   let globalAppToEvRate = (FUNNEL.appToPsRate/100) * (FUNNEL.psCompRate/100) * (FUNNEL.screenInRate/100) * (FUNNEL.evSchedRate/100);
 
-  // Array to distribute working days into 5 weeks (max 5 days per week)
+  // Dynamic Calendar Boundaries
+  let calWeeks = getCalendarWeeks(activeMonth);
   let wdArray = [0,0,0,0,0];
-  let remainingWd = wd;
-  for(let i=0; i<5; i++) {
-      wdArray[i] = Math.min(5, remainingWd);
-      remainingWd -= wdArray[i];
+  let weekLabels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+  
+  if (calWeeks && calWeeks.length > 0) {
+      let totalCalDays = calWeeks.reduce((sum, w) => sum + w.wd, 0);
+      for(let i=0; i<5; i++) {
+          if (i < calWeeks.length) {
+              wdArray[i] = calWeeks[i].wd * (wd / totalCalDays);
+              weekLabels[i] = calWeeks[i].label;
+          }
+      }
+  } else {
+      let remainingWd = wd;
+      for(let i=0; i<5; i++) {
+          wdArray[i] = Math.min(5, remainingWd);
+          remainingWd -= wdArray[i];
+          weekLabels[i] = `Week ${i+1}`;
+      }
   }
 
   // --- MONTHLY AGGREGATE CALCULATIONS ---
@@ -1408,7 +1484,7 @@ function recalculateDashboardMetrics() {
   }
 
   // --- CACHE & RENDER ---
-  window.stateMetricsCache = { metrics: stateMetrics, wdArray: wdArray };
+  window.stateMetricsCache = { metrics: stateMetrics, wdArray: wdArray, weekLabels: weekLabels };
   
   // Update DOM elements
   document.getElementById('tbl-dem-apps').innerText = fmt(d_bumped); document.getElementById('tbl-pot-apps').innerText = fmt(p_apps); document.getElementById('tbl-var-apps').innerHTML = formatVar(0);
@@ -1501,6 +1577,7 @@ function renderDualHeatmap() {
   if(!window.stateMetricsCache || !window.stateMetricsCache.metrics) return;
   let metrics = window.stateMetricsCache.metrics;
   let wdArray = window.stateMetricsCache.wdArray;
+  let weekLabels = window.stateMetricsCache.weekLabels;
   
   let thead = document.getElementById('heatmap-thead');
   let tbody = document.getElementById('heatmap-body');
@@ -1557,8 +1634,9 @@ function renderDualHeatmap() {
               let isActive = activeWeekFilter === w;
               let bg = isActive ? '#3b82f6' : 'transparent';
               let color = isActive ? '#fff' : '#c4b5fd';
+              let displayLabel = weekLabels[w] || `Week ${w+1}`;
               colsHtml += `<th style="background: rgba(139,92,246,0.05); text-align:center; padding: 2px;">
-                  <button style="width:100%; border:1px solid ${isActive ? '#60a5fa' : '#4c1d95'}; background:${bg}; color:${color}; border-radius:4px; font-size:9px; font-weight:bold; cursor:pointer; padding:4px; transition: 0.2s;" onclick="setWeekFilter(${w})">${WEEK_LABELS[w]}</button>
+                  <button style="width:100%; border:1px solid ${isActive ? '#60a5fa' : '#4c1d95'}; background:${bg}; color:${color}; border-radius:4px; font-size:9px; font-weight:bold; cursor:pointer; padding:4px; transition: 0.2s;" onclick="setWeekFilter(${w})">${displayLabel}</button>
               </th>`;
           }
       }
@@ -1764,8 +1842,19 @@ async function syncPtoFromGoogleSheets(isSilent = false) {
                     Object.keys(ceColMap).forEach(cIdx => { 
                         let f = parseFloat(String(row[cIdx]).trim()); 
                         if (!isNaN(f) && f > 0) {
-                            let weekIdx = Math.floor((d.getDate() - 1) / 7);
+                            let calWeeks = getCalendarWeeks(tMonth);
+                            let weekIdx = -1;
+                            
+                            if (calWeeks && calWeeks.length > 0) {
+                                for(let i=0; i<calWeeks.length; i++) {
+                                    let wStart = new Date(calWeeks[i].start); wStart.setHours(0,0,0,0);
+                                    let wEnd = new Date(calWeeks[i].end); wEnd.setHours(23,59,59,999);
+                                    if (d >= wStart && d <= wEnd) { weekIdx = i; break; }
+                                }
+                            }
+                            if (weekIdx === -1) { weekIdx = Math.floor((d.getDate() - 1) / 7); }
                             if (weekIdx > 4) weekIdx = 4;
+                            
                             ptoCounts[ceColMap[cIdx]][tMonth].total += f;
                             ptoCounts[ceColMap[cIdx]][tMonth].weekly[weekIdx] += f;
                         }
